@@ -19,7 +19,7 @@ sequelize
 //Sequelize automatically adds columns 'id', 'createAt', 'updatedAt'
 
 //User Model
-var User = sequelize.define('User', {
+var User = exports.User = sequelize.define('User', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
   email: Sequelize.STRING,
@@ -28,7 +28,7 @@ var User = sequelize.define('User', {
 });
 
 //Vendor Model
-var Vendor = sequelize.define('Vendor', {
+var Vendor = exports.Vendor = sequelize.define('Vendor', {
  // type: 
  // image: 
   description: Sequelize.STRING,
@@ -42,7 +42,7 @@ User.hasOne(Vendor);
 Vendor.belongsTo(User);
 
 //Tip Model
-var Tip = sequelize.define('Tip', {
+var Tip = exports.Tip = sequelize.define('Tip', {
   amount: Sequelize.DECIMAL,
   location: Sequelize.STRING
 });
@@ -54,7 +54,7 @@ Vendor.hasMany(Tip);
 Tip.belongsTo(Vendor);
 
 //Rating Model
-var Rating = sequelize.define('Rating', {
+var Rating = exports.Rating = sequelize.define('Rating', {
   rating: Sequelize.INTEGER,
 });
 
@@ -65,7 +65,7 @@ User.hasMany(Rating);
 Rating.belongsTo(User);
 
 //Type Model
-var Type = sequelize.define('Type', {
+var Type = exports.Type = sequelize.define('Type', {
   name: Sequelize.STRING,
 })
 
