@@ -5,6 +5,8 @@
     "pg": "^3.6.2"
   },
   "dependencies": {
-    "express": "^4.10.1"
+    "express": "^4.10.1",
+    "pg": "^3.6.2",
+    "sequelize": "^2.0.0-rc2"
   }
 }
