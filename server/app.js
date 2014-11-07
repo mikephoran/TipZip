@@ -1,9 +1,16 @@
 var express = require('express');
 var apiRouter = require('./routes').apiRouter;
 var authRouter = require('./routes').authRouter;
+// var passport = require('passport');
 var bodyParser = require('body-parser');
 var port = process.env.PORT || 5000;
-var app = express();b
+var app = express();
+
+// app.use(express.cookieParser());
+// app.use(express.bodyParser());
+// app.use(express.session({ secret: 'SECRET' }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', express.static(__dirname + '/../client'));

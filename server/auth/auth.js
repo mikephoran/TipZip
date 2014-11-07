@@ -1,9 +1,26 @@
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+// var passport = require('passport');
+// var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 var Sequelize = require ('Sequelize');
-// May need to be changed based on db
-// var User = require('../db/db.js');
+var Promise = require('bluebird');
+var User = require('../db/db').User;
+
+
+// exports.login = function(req, res) {
+//   var newUser = {
+//     username: req.body.username,
+//     password: req.body.password,
+//     email: req.body.email
+//   };
+//   var responseMsg = {};
+//   findUser(username, email, function(user) {
+//     if (!user) {
+      
+//     } else {
+      
+//     }
+//   })
+// };
 
 exports.register = function(req, res) {
   var newUser = {
@@ -19,7 +36,6 @@ exports.register = function(req, res) {
         if (err) { console.log('User Creation Failed:', err); }
         responseMsg.result = true;
         responseMsg.message = 'User Creation Success!';
-        console.log(responseMsg.message);
         res.json(responseMsg);
       });
     } else {
