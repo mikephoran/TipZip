@@ -32,7 +32,7 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
  // type: 
  // image: 
   description: Sequelize.STRING,
-  //location: 
+  //location: JAMON TO ADD EXTENSION
   status: Sequelize.BOOLEAN,
   total_tip: Sequelize.DECIMAL
 });
@@ -40,11 +40,13 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
 //User and Vendor have 1-1 Relationship
 User.hasOne(Vendor);  
 Vendor.belongsTo(User);
+User.hasMany(Vendor);
+Vendor.hasMany(User);
 
 //Tip Model
 var Tip = exports.Tip = sequelize.define('Tip', {
   amount: Sequelize.DECIMAL,
-  location: Sequelize.STRING
+  //location: JAMON TO ADD EXTENSION
 });
 
 //Tip has one User and one Vendor
@@ -66,7 +68,7 @@ Rating.belongsTo(User);
 
 //Type Model
 var Type = exports.Type = sequelize.define('Type', {
-  name: Sequelize.STRING,
+  type: Sequelize.STRING,
 })
 
 //Type is N:M with Users and with Vendors
