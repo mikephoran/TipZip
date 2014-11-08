@@ -11,9 +11,10 @@ var app = express();
 // app.use(express.session({ secret: 'SECRET' }));
 // app.use(passport.initialize());
 // app.use(passport.session());
-
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());  
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(__dirname + '/../client'));
+
 
 var apiRoutes = express.Router();
 app.use('/api', apiRoutes);

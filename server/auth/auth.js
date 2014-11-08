@@ -1,7 +1,7 @@
 // var passport = require('passport');
 // var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
-var Sequelize = require ('Sequelize');
+var sequelize = require('../db/db').sequelize;
 var Promise = require('bluebird');
 var User = require('../db/db').User;
 
@@ -23,6 +23,7 @@ var User = require('../db/db').User;
 // };
 
 exports.register = function(req, res) {
+  console.log('Registering:', req.body);
   var newUser = {
     username: req.body.username,
     password: req.body.password,
@@ -69,9 +70,8 @@ var findUser = function(username, email, cb) {
   var secondFilter = {
     email: email
   };
-
   User.find({
-    where: Sequelize.and(firstFilter, Sequelize.or(secondFilter))
-  }).success(cb);
+    where: sequelize.or({username: username}, {email: email})
+  }).then(cb);
 };
 

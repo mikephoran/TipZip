@@ -1,8 +1,8 @@
-var Sequelize = require('sequelize')
-  , sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
-      dialect: "postgres", 
-      port:    5432, 
-    })
+var Sequelize = require('sequelize');
+var sequelize = exports.sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
+  dialect: "postgres", 
+  port: 5432
+});
  
 sequelize
   .authenticate()
@@ -24,7 +24,7 @@ var User = exports.User = sequelize.define('User', {
   password: Sequelize.STRING,
   email: Sequelize.STRING,
   zipcode: Sequelize.STRING,
-  age: Sequelize.INTEGER,
+  age: Sequelize.INTEGER
 });
 
 //Vendor Model
