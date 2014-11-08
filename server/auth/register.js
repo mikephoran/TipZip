@@ -2,6 +2,7 @@ var bcrypt = require('bcrypt');
 var sequelize = require('../db/db').sequelize;
 var Promise = require('bluebird');
 var User = require('../db/db').User;
+var findUser = require('./auth').findUser;
 
 exports.register = function(req, res) {
   console.log('Registering:', req.body);
@@ -42,10 +43,4 @@ var generateUser = function(newUser) {
       });
     });
   });
-};
-
-var findUser = function(username, email, cb) {
-  User.find({
-    where: sequelize.or({ username: username }, { email: email })
-  }).then(cb);
 };
