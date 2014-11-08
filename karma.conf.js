@@ -11,8 +11,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'server/**/*.js',  
       //TESTING FILES
-      'testing/**/*.js'
+      'test/*.js'
     ],
 
     // list of files / patterns to exclude
@@ -38,7 +39,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode
