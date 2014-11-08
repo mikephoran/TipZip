@@ -32,9 +32,9 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
   image: Sequelize.STRING,
   description: Sequelize.STRING,
   status: Sequelize.BOOLEAN,
-  total_tip: Sequelize.DECIMAL
-  latitude: Sequalize.FLOAT,
-  longitude: Sequalize.FLOAT
+  total_tip: Sequelize.DECIMAL,
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT
 });
 
 //User and Vendor have 1-1 Relationship
@@ -46,8 +46,8 @@ Vendor.hasMany(User);
 //Tip Model
 var Tip = exports.Tip = sequelize.define('Tip', {
   amount: Sequelize.DECIMAL,
-  latitude: Sequalize.FLOAT,
-  longitude: Sequalize.FLOAT
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT
 });
 
 //Tip has one User and one Vendor

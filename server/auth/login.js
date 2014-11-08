@@ -1,18 +1,24 @@
-var passport = require('./auth').passport;
-var LocalStrategy = require('./auth').passportLocal;
-var findUser = require('./auth').findUser;
+var LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var helpers = require('./helpers');
+
+exports.login = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/fail',
+  failureFlash: true
+});
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    findUser(username, username, function(user) {
+    helpers.findUser(username, username, function(user) {
       if (!user) {
-        return done(null, false, { message: 'Incorrect Username.'});
+        return done(null, false, { message: 'Invalid Username.' });
       }
-      checkPassword(user, password).then(function(result) {
+      helpers.checkPassword(user, password).then(function(result) {
         if (result) {
-          return done(null, { username: user.username });
+          return done(null, user.username);
         }
-        return done(null, false, {messsage: 'Incorrect Password.' });
+        return done(null, false, { messsage: 'Invalid Password.' });
       });
     });
   }
@@ -25,18 +31,3 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
-
-exports.login = passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-});
-
-var checkPassword = function(user, password) {
-  return new Promise(function(resolve) {
-    bcrypt.compare(password, user.password, function(err, result) {
-      if (err) { console.log('bcrypt compare error:', err); }
-      resolve(result);
-    });
-  });
-};
