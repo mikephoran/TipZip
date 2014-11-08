@@ -29,22 +29,25 @@ var User = exports.User = sequelize.define('User', {
 
 //Vendor Model
 var Vendor = exports.Vendor = sequelize.define('Vendor', {
- // type: 
- // image: 
+  image: Sequelize.STRING,
   description: Sequelize.STRING,
-  //location: 
   status: Sequelize.BOOLEAN,
   total_tip: Sequelize.DECIMAL
+  latitude: Sequalize.FLOAT,
+  longitude: Sequalize.FLOAT
 });
 
 //User and Vendor have 1-1 Relationship
 User.hasOne(Vendor);  
 Vendor.belongsTo(User);
+User.hasMany(Vendor);
+Vendor.hasMany(User);
 
 //Tip Model
 var Tip = exports.Tip = sequelize.define('Tip', {
   amount: Sequelize.DECIMAL,
-  location: Sequelize.STRING
+  latitude: Sequalize.FLOAT,
+  longitude: Sequalize.FLOAT
 });
 
 //Tip has one User and one Vendor
@@ -66,7 +69,7 @@ Rating.belongsTo(User);
 
 //Type Model
 var Type = exports.Type = sequelize.define('Type', {
-  name: Sequelize.STRING,
+  type: Sequelize.STRING,
 })
 
 //Type is N:M with Users and with Vendors
