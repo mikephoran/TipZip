@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '0.10'
+- '0.11'
+addons:
+  postgres: "9.3"
+before_script:
+  - npm install -g bower gulp
+  -bower install
+  -psql -c 'create database tipzip;' -U df
+  -psql -U df -c 'create extension postgis'
+after_success:
+ - bash ./travis/after_success.sh

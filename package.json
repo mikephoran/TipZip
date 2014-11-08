@@ -2,6 +2,10 @@
   "name": "TipZip",
   "version": "0.0.0",
   "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-karma": "0.0.4",
+    "karma": "^0.12.24",
+    "karma-jasmine": "^0.2.3",
     "pg": "^3.6.2"
   },
   "dependencies": {
@@ -18,5 +22,9 @@
     "pg": "^3.6.2",
     "request": "^2.47.0",
     "sequelize": "^2.0.0-rc2"
+  },
+  "scripts": {
+    "start": "node server/app.js",
+    "test": "gulp test"
   }
 }
