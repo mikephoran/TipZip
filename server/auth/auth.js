@@ -64,14 +64,8 @@ var generateUser = function(newUser) {
 };
 
 var findUser = function(username, email, cb) {
-  var firstFilter = {
-    username: username
-  };
-  var secondFilter = {
-    email: email
-  };
   User.find({
-    where: sequelize.or({username: username}, {email: email})
+    where: sequelize.or({ username: username }, { email: email })
   }).then(cb);
 };
 
