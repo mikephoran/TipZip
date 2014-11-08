@@ -1,16 +1,18 @@
 var express = require('express');
 var apiRouter = require('./routes').apiRouter;
 var authRouter = require('./routes').authRouter;
-// var passport = require('passport');
+var passport = require('./auth/auth').passport;
+var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser');
+var session = require('express-session')
 var port = process.env.PORT || 5000;
 var app = express();
 
-// app.use(express.cookieParser());
-// app.use(express.bodyParser());
-// app.use(express.session({ secret: 'SECRET' }));
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(cookieParser());
+app.use(session({ secret: 'SECRET' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(__dirname + '/../client'));
