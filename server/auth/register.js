@@ -8,7 +8,7 @@ module.exports = function(req, res) {
     email: req.body.email
   };
 
-  helpers.findUser(newUser.username, newUser.password, function(user) {
+  helpers.findUser(newUser, function(user) {
     if (!!user) {
       return res.json({success: false, message: 'Error: Username already exists.'});
     } 

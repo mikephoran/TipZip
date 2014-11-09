@@ -3,7 +3,7 @@ var api = require('./api/api');
 var auth = require('./auth/auth');
 
 exports.apiRouter = function(app) {
-  // app.get('/users', helpers.xxxxxxx)
+  // app.get('/users', api.xxx)
 };
 
 exports.authRouter = function(app) {

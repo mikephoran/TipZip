@@ -1,34 +1,27 @@
-//Include gulp
 var gulp = require('gulp');
 
-//Include Our Plugins
+//plugins
 var karma = require('karma').server;
-// var karma = require('gulp-karma');
+var jsdoc = require('gulp-jsdoc');
 
 var testFiles = [
   'server/**/*.js',
   'test/**/*.js'
 ];
 
-gulp.task('test', function(done){
+gulp.task('test', function(done) {
   karma.start({ 
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done);
 });
 
-// gulp.task('test', function(){
-//   return gulp.src(testFiles)
-//   .pipe(karma({
-//     configFile: 'karma.conf.js',
-//     action: 'start'
-//   }))
-//   .on('error', function(err){
-//     throw err;
-//   });
-// });
+gulp.task('docs', function() {
+  gulp.src(['server/*.js', 'server/**/*.js'])
+  .pipe(jsdoc('./docs'));
+});
 
-gulp.task('default', function(){
+gulp.task('default', function() {
   gulp.src(testFiles)
   .pipe(karma({
     configFile: 'karma.conf.js',

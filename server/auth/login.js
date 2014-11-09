@@ -16,7 +16,8 @@ module.exports = function(req, res, next) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    helpers.findUser(username, username, function(user) {
+    var user = { username: username };
+    helpers.findUser(user, function(user) {
       if (!user) {
         return done(null, false, {message: 'Invalid Username.'});
       }

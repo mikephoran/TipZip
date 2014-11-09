@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
-var port = process.env.PORT || 5000;
+var port = require('./config/config').port;
 var app = express();
 var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
