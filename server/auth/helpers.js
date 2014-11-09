@@ -20,7 +20,6 @@ exports.checkPassword = function(user, password) {
   });
 };
 
-
 exports.generateUser = function(newUser) {
   return new Promise(function(resolve) {
     bcrypt.hash(newUser.password, 10, function(err, hash) {

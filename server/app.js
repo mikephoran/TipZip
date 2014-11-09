@@ -8,7 +8,17 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var port = process.env.PORT || 5000;
 var app = express();
+var defaultCorsHeaders = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "access-control-allow-headers": "content-type, accept",
+  "access-control-max-age": 10
+};
 
+app.use(function(req, res, next) {
+  res.header(defaultCorsHeaders);
+  next();
+});
 app.use(cookieParser());
 app.use(session({ secret: 'TIPZIPWILLWIN' }));
 app.use(passport.initialize());
@@ -18,19 +28,6 @@ app.use(flash());
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use('/', express.static(__dirname + '/../client'));
-/*
-* Fake Routes for Testing 
-*/
-app.get('/', function(req, res) {
-  res.json({success: true, message: 'Valid Credentials!'});
-});
-app.get('/fail', function(req, res) {
-  res.json({success: false, message: 'Invalid Credentials!'});
-});
-/*
-* end fake routes for testing
-*/ 
-
 
 var apiRoutes = express.Router();
 app.use('/api', apiRoutes);
