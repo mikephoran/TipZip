@@ -1,7 +1,7 @@
 var sequelize = require('../db/db').sequelize;
 var helpers = require('./helpers');
 
-exports.register = function(req, res) {
+module.exports = function(req, res) {
   var newUser = {
     username: req.body.username,
     password: req.body.password,

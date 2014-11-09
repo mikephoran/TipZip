@@ -9,5 +9,4 @@ exports.apiRouter = function(app) {
 exports.authRouter = function(app) {
   app.post('/login', auth.login);
   app.post('/register', auth.register);
-  // app.get('/logout', auth.logout);
 };

@@ -1,2 +1,2 @@
-exports.login = require('./login').login;
-exports.register = require('./register').register;
+exports.login = require('./login');
+exports.register = require('./register');

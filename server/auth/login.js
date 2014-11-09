@@ -2,7 +2,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var helpers = require('./helpers');
 
-exports.login = function(req, res, next) {
+module.exports = function(req, res, next) {
   passport.authenticate('local', function(err, user) {
     if (err) { console.log('Passport Error:', err); }
 
