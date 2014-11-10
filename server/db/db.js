@@ -38,8 +38,8 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
 });
 
 //User and Vendor have 1-1 Relationship
-User.hasOne(Vendor);  
-Vendor.belongsTo(User);
+Vendor.hasOne(User);
+User.belongsTo(Vendor);
 User.hasMany(Vendor);
 Vendor.hasMany(User);
 
