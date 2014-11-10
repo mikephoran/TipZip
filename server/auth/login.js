@@ -1,3 +1,4 @@
+/*jslint node: true */
 /**
 * @module auth_login
 */

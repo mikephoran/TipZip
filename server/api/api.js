@@ -1,3 +1,4 @@
+/*jslint node: true */
 var helpers = require('../db/helpers');
 // var User = require('../db/db').User;
 var Vendor = require('../db/db').Vendor;

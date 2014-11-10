@@ -1,3 +1,5 @@
+/*jslint node: true */
+/* jshint -W098 */
 /**
 * @module auth_register
 */
@@ -50,4 +52,3 @@ module.exports = function(req, res) {
     });
   });
 };
-
