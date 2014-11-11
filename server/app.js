@@ -56,7 +56,7 @@ var authenticate = function(req, res, next) {
 app.get('/test', authenticate, function(req, res) {
   console.log('For Testing:', req.user);
   res.json({result: true, user: req.user});
-})
+});
 /*
 * END DEVELOPMENT ONLY 
 */

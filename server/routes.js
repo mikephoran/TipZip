@@ -32,6 +32,6 @@ exports.authRouter = function(app) {
   app.post('/logout', auth.logout, function(req, res) {
     console.log('Logged Out:', req.user, req.session);
     res.sendStatus(401);
-  })
+  });
   app.post('/register', auth.register);
 };
