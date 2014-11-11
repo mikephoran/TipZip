@@ -4,6 +4,6 @@ node_js:
   - "0.10"
 before_script:
   - npm install -g gulp
-  - psql -c 'create database tipzip;' -U df
-  - psql -U df -c 'create extension postgis;'
+  - psql -c 'create database tipzip;' -U postgres
+  - psql -U postgres -c 'create extension postgis;'
 script: gulp ci
