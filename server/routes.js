@@ -11,14 +11,14 @@ var authenticate = function(req, res, next) {
 };
 
 exports.apiRouter = function(app) {
-  app.post('/vendor/add', authenticate, api.add);
-  app.post('/vendor/update', authenticate, api.updateVendor);
-  app.get('/vendor/:vendor', authenticate, api.findOne);
-  app.get('/vendors', authenticate, api.findAll);
-  // app.post('/vendor/add', api.add);
-  // app.post('/vendor/updateVendor', api.updateVendor);
-  // app.get('/vendors', api.findAll);
-  // app.get('/vendor/:vendor', api.findOne);
+  // app.post('/vendor/add', authenticate, api.add);
+  // app.post('/vendor/update', authenticate, api.updateVendor);
+  // app.get('/vendor/:vendor', authenticate, api.findOne);
+  // app.get('/vendors', authenticate, api.findAll);
+  app.post('/vendor/add', api.add);
+  app.post('/vendor/update', api.updateVendor);
+  app.get('/vendor/get', api.findAll);
+  app.get('/vendor/:vendor', api.findOne);
 };
 
 exports.authRouter = function(app) {
