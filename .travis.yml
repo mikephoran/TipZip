@@ -5,6 +5,6 @@ node_js:
 before_script:
   - npm install -g gulp
   - psql -c 'create database tipzip;' -U postgres
-  - psql "create user df with password 'myPassword';"
   - psql -U postgres -c 'create extension postgis;'
+  - psql "CREATE USER df with password 'myPassword';"
 script: gulp ci
