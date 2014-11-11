@@ -1,24 +1,37 @@
+/**
+* @module auth_login
+*/
 var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
-var helpers = require('./helpers');
+var helpers = require('../db/helpers');
+var bcrypt = require('bcrypt');
+var Promise = require('bluebird');
 
-// module.exports = function(req, res, next) {
-//   passport.authenticate('local', function(err, user) {
-//     if (err) { console.log('Passport Error:', err); }
 
-//     if (user) {
-//       res.redirect('/');
-//       // res.json({success: true, message: 'Login Successful!'});
-//     } else {
-//       // res.json({success: false, message: 'Error: Invalid Username/Password!'});
-//     }
-//   })(req, res, next);
-// };
 exports.login = passport.authenticate('local');
-
 exports.logout = function(req, res, next) {
   req.logout();
   next();
+};
+
+/**
+* Checks to see if a password given by a user matches their Encrypted password stored in DB.
+* @function
+* @memberof module:auth_login
+* @instance
+* @param {object} user User object profile to test against.
+* @param {string} user.password Password from user object profile.
+* @param {string} password Password to test against provided by user.
+*/
+var checkPassword = function(user, password) {
+  return new Promise(function(resolve) {
+    bcrypt.compare(password, user.password, function(err, result) {
+      if (err) {
+        console.log('bcrypt compare error:', err);
+      }
+      resolve(result);
+    });
+  });
 };
 
 passport.use(new LocalStrategy(
@@ -28,7 +41,7 @@ passport.use(new LocalStrategy(
       if (!user) {
         return done(null, false, {message: 'Invalid Username.'});
       }
-      helpers.checkPassword(user, password).then(function(result) {
+      checkPassword(user, password).then(function(result) {
         if (result) {
           return done(null, user.username);
         }
