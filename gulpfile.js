@@ -11,7 +11,7 @@ var jshint = require('gulp-jshint');
 
 var testFiles = [
   'server/**/*.js',
-  'test/**/**.js'
+  'test/**/*.js'
 ];
 
 gulp.task('lint', function(){
