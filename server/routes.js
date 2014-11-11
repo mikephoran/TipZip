@@ -1,3 +1,6 @@
+/*jslint node: true */
+/* jshint -W098 */
+
 var helpers = require('./main/helpers');
 var api = require('./api/api');
 var auth = require('./auth/auth');
@@ -29,6 +32,6 @@ exports.authRouter = function(app) {
   app.post('/logout', auth.logout, function(req, res) {
     console.log('Logged Out:', req.user, req.session);
     res.sendStatus(401);
-  })
+  });
   app.post('/register', auth.register);
 };

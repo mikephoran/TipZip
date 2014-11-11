@@ -1,3 +1,4 @@
+/*jslint node: true */
 /**
 * @module auth_login
 */
@@ -5,7 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var helpers = require('../db/helpers');
 var bcrypt = require('bcrypt');
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 
 exports.login = passport.authenticate('local');
@@ -24,7 +25,7 @@ exports.logout = function(req, res, next) {
 * @param {string} password Password to test against provided by user.
 */
 var checkPassword = function(user, password) {
-  return new Promise(function(resolve) {
+  return new BPromise(function(resolve) {
     bcrypt.compare(password, user.password, function(err, result) {
       if (err) {
         console.log('bcrypt compare error:', err);

@@ -1,10 +1,12 @@
+/*jslint node: true */
+/* jshint -W098 */
 /**
 * @module auth_register
 */
 var helpers = require('../db/helpers');
 var User = require('../db/db').User;
 var bcrypt = require('bcrypt');
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 /**
 * Generates a new user and stores in DB
@@ -17,7 +19,7 @@ var Promise = require('bluebird');
 * @param {string} user.password Password of new user. Will be hashed before storage.
 */
 var generateUser = function(user) {
-  return new Promise(function(resolve) {
+  return new BPromise(function(resolve) {
     bcrypt.hash(user.password, 10, function(err, hash) {
       User.build({
         username: user.username,
@@ -50,4 +52,3 @@ module.exports = function(req, res) {
     });
   });
 };
-

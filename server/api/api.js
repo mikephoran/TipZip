@@ -1,3 +1,5 @@
+/*jslint node: true */
+/* jshint -W098 */
 var helpers = require('../db/helpers');
 // var User = require('../db/db').User;
 var Vendor = require('../db/db').Vendor;
@@ -27,7 +29,7 @@ exports.findOne = function(req, res) {
       success: true, 
       result: vendor || []
     });
-  })
+  });
 };
 
 exports.findAll = function(req, res) {
@@ -36,7 +38,7 @@ exports.findAll = function(req, res) {
       success: true,
       result: vendors
     });
-  })
+  });
 };
 
 exports.updateVendor = function(req, res) {
