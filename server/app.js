@@ -1,6 +1,7 @@
 var express = require('express');
 var apiRouter = require('./routes').apiRouter;
 var authRouter = require('./routes').authRouter;
+var db = require('./db/db');
 var passport = require('passport');
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser');
@@ -12,18 +13,18 @@ var app = express();
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
-// var defaultCorsHeaders = {
-//   'access-control-allow-origin': 'http://localhost:8100',
-//   'access-control-allow-credentials': true,
-//   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-//   'access-control-allow-headers': 'content-type, accept',
-//   'access-control-max-age': 10
-// };
+var defaultCorsHeaders = {
+  'access-control-allow-origin': 'http://localhost:8100',
+  'access-control-allow-credentials': true,
+  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'access-control-allow-headers': 'content-type, accept',
+  'access-control-max-age': 10
+};
 
-// app.use(function(req, res, next) {
-//   res.header(defaultCorsHeaders);
-//   next();
-// });
+app.use(function(req, res, next) {
+  res.header(defaultCorsHeaders);
+  next();
+});
 /*
 * END DEVELOPMENT ONLY 
 */
