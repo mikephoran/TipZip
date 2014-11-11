@@ -1,4 +1,3 @@
-var sequelize = require('../db/db').sequelize;
 var helpers = require('./helpers');
 
 module.exports = function(req, res) {
@@ -9,12 +8,12 @@ module.exports = function(req, res) {
   };
   helpers.findUser(newUser, function(user) {
     if (!!user) {
-      return res.json({success: false, message: 'Error: Username already exists.'});
+      return res.json({success: false, result: 'Error: Username already exists.'});
     } 
 
     helpers.generateUser(newUser).then(function(err) {
       req.login(newUser.username, function() {
-        res.json({success: true, message: 'Successful Registration'});
+        res.json({success: true, result: 'Successful Registration'});
       });
     });
   });
