@@ -2,16 +2,23 @@ var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var helpers = require('./helpers');
 
-module.exports = function(req, res, next) {
-  passport.authenticate('local', function(err, user) {
-    if (err) { console.log('Passport Error:', err); }
+// module.exports = function(req, res, next) {
+//   passport.authenticate('local', function(err, user) {
+//     if (err) { console.log('Passport Error:', err); }
 
-    if (user) {
-      res.json({success: true, message: 'Login Successful!'});
-    } else {
-      res.json({success: false, message: 'Error: Invalid Username/Password!'});
-    }
-  })(req, res, next);
+//     if (user) {
+//       res.redirect('/');
+//       // res.json({success: true, message: 'Login Successful!'});
+//     } else {
+//       // res.json({success: false, message: 'Error: Invalid Username/Password!'});
+//     }
+//   })(req, res, next);
+// };
+exports.login = passport.authenticate('local');
+
+exports.logout = function(req, res, next) {
+  req.logout();
+  next();
 };
 
 passport.use(new LocalStrategy(
