@@ -1,6 +1,6 @@
 /*jslint node: true */
 var Sequelize = require('sequelize');
-var sequelize = exports.sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
+var sequelize = exports.sequelize = new Sequelize('tipzip', 'postgres', 'myPassword', {
   dialect: "postgres", 
   port: 5432
 });
