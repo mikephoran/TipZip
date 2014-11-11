@@ -1,6 +1,6 @@
 /*jslint node: true */
 var Sequelize = require('sequelize');
-var sequelize = exports.sequelize = new Sequelize('tipzip', 'postgres', 'myPassword', {
+var sequelize = exports.sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
   dialect: "postgres", 
   port: 5432
 });
@@ -84,8 +84,8 @@ Vendor.hasMany(Type);
 
 //Vendor Group Model
 var Group = exports.Group = sequelize.define('Group', {
-  groupname: Sequelize.STRING;
-})
+  groupname: Sequelize.STRING
+});
 
 //Group has multiple Vendors
 Group.hasMany(Vendor);

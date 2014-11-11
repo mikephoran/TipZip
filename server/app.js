@@ -1,4 +1,5 @@
 /*jslint node: true */
+/* jshint -W098 */
 var express = require('express');
 var apiRouter = require('./routes').apiRouter;
 var authRouter = require('./routes').authRouter;

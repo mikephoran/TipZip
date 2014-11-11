@@ -1,3 +1,5 @@
+/*jslint node: true */
+/* jshint -W098 */
 /**
 * @module dbHelpers
 */
@@ -31,7 +33,7 @@ exports.findVendor = function(user, callback) {
     Vendor.find({
       where: { UserId: user.id },
     }).then(callback);
-  })
+  });
 };
 
 exports.findOne = function(user, callback) {
