@@ -81,6 +81,15 @@ User.hasMany(Type);
 Type.hasMany(Vendor);
 Vendor.hasMany(Type);
 
+//Vendor Group Model
+var Group = exports.Group = sequelize.define('Group', {
+  groupname: Sequelize.STRING;
+})
+
+//Group has multiple Vendors
+Group.hasMany(Vendor);
+Vendor.hasMany(Group);
+
 
 //Synchronize the schema and create tables
 sequelize
