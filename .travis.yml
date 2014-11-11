@@ -6,8 +6,8 @@ addons:
   postgresql: 9.3
 before_script:
   -npm install -g gulp
-  -psql -c 'create database tipzip' -U df
-  -psql -U df -c 'create extension postgis'
+  # -psql -c 'create database tipzip' -U df
+  # -psql -U df -c 'create extension postgis'
 
 script:
   - gulp ci
