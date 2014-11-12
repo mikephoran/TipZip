@@ -31,8 +31,11 @@ var User = exports.User = sequelize.define('User', {
 var Vendor = exports.Vendor = sequelize.define('Vendor', {
   image: Sequelize.STRING,
   description: Sequelize.STRING,
-  status: Sequelize.BOOLEAN,
-  total_tip: Sequelize.DECIMAL,
+  status: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
+  totaltip: Sequelize.DECIMAL,
   latitude: Sequelize.FLOAT,
   longitude: Sequelize.FLOAT
 });

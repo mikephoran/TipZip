@@ -11,6 +11,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
+var seed = require('./db/seed');
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD

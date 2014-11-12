@@ -12,12 +12,14 @@ var testFiles = [
   'test/**/*.js'
 ];
 
+
 gulp.task('lint', function(){
   gulp.src(testFiles)
   .pipe(jshint('.jshintrc'))
   .pipe(jshint.reporter('default', {verbose: true}))
   .pipe(jshint.reporter('fail'))
 });
+
 
 gulp.task('test', function(){
   return gulp.src(testFiles)
