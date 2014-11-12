@@ -105,3 +105,4 @@ sequelize.sync({ force: true })
      console.log('It worked!');
    }
 });
+
