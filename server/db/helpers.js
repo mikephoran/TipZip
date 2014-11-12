@@ -36,8 +36,10 @@ exports.findUser = function(user, callback) {
 * @param {function} callback Function to be executed on result of the query. 
 */
 exports.findVendor = function(vendor, callback) {
-  var username = vendor.username;
-  var email = vendor.email || vendor.username;
+  var user = {
+    username: vendor.username,
+    email: vendor.email || vendor.username
+  };
   exports.findUser(user, function(user) {
     Vendor.find({
       where: { UserId: user.id },
