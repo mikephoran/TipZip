@@ -39,7 +39,7 @@ app.use(flash());
 
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use('/', express.static(__dirname + '/../client'));
+app.use('/', express.static(__dirname + '/../public'));
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
@@ -47,7 +47,6 @@ var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
     console.log('authenticated:', req.isAuthenticated());
     console.log('user:', req.user);
-    // console.log(JSON.parse(JSON.stringify(req)));
     res.sendStatus(401);
   } else {
     console.log('authenticated:', req.isAuthenticated());
@@ -62,6 +61,7 @@ app.get('/test', authenticate, function(req, res) {
 /*
 * END DEVELOPMENT ONLY 
 */
+
 var apiRoutes = express.Router();
 app.use('/api', apiRoutes);
 apiRouter(apiRoutes);

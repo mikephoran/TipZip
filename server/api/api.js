@@ -1,8 +1,34 @@
 /*jslint node: true */
 /* jshint -W098 */
 var helpers = require('../db/helpers');
-// var User = require('../db/db').User;
 var Vendor = require('../db/db').Vendor;
+var multipart = require('connect-multiparty');
+var _ = require('lodash');
+
+// need to handle being able to add a photo "before" user finishes registration process
+exports.photo = function (req, res) {
+  var fileName = req.files.file.path.split('/');
+  fileName = fileName[fileName.length - 1];
+
+  var changes = {
+    image: fileName
+  };
+  var vendor = {
+    username: req.user,
+    email: req.user
+  };
+  helpers.findVendor(vendor, function(vendor) {
+    vendor.updateAttributes(changes)
+    .success(function() {
+      res.json({
+        success: true,
+        result: {
+          imagePath: fileName
+        }
+      }); 
+    });
+  });
+};
 
 exports.add = function(req, res) {
   helpers.findUser({username: req.user}, function(user) {
@@ -14,7 +40,9 @@ exports.add = function(req, res) {
     })
     .save()
     .complete(function(err) {
-      console.log('Error:', err);
+      if (err) {
+        console.log('Error:', err);
+      }
     });
   });
 };
