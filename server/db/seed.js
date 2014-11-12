@@ -17,7 +17,7 @@ var images = {
 };
 
 var SeedTypes = exports.SeedTypes = function() {
-  console.log('SEEDING THE TYPE!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  console.log('Seeding Types')
   var types = ['Art', 'Music', 'Perfomance', 'Food', 'Goods', 'Farmers Market'];
   for (var i=0; i<types.length; i++) {
     Type.build({
@@ -31,7 +31,8 @@ var SeedTypes = exports.SeedTypes = function() {
 }
 
 var addVendor = exports.addVendor = function(name, lat, long, zip, type, totaltip, pass, email, age, image, desc) {
-  
+  console.log('Seeding Vendors')
+
   //set defaults for User Properties. Name and Zip should not be allowed to default though.
   name = name || 'test';
   name = name.split(' ').join('');
@@ -50,29 +51,31 @@ var addVendor = exports.addVendor = function(name, lat, long, zip, type, totalti
 
   User
   .findOrCreate({
-    where: {
-      username: name
+    where: {username: name},
+    defaults: {
+      username: name, 
+      password: pass, 
+      email: email, 
+      zipcode: zip, 
+      age: age
     }
-  }, { defaults: {
-    username: name, 
-    password: pass, 
-    email: email, 
-    zip: zip, 
-    age: age
-  }
   })
   .success(function(user, created) {
     var userid = user.values.id
     Vendor
-    .findOrCreate({where: {UserId: userid}}, {
-      UserId: userid, 
-      latitude: lat, 
-      longitude: long, 
-      type: type, 
-      totaltip: 
-      totaltip, 
-      image: image, 
-      description: desc})
+    .findOrCreate({
+      where: {UserId: userid}, 
+      defaults: {
+        UserId: userid, 
+        latitude: lat, 
+        longitude: long, 
+        type: type, 
+        totaltip: 
+        totaltip, 
+        image: image, 
+        description: desc
+      }
+    })
     .success(function(user, created) {
       return userid;
     }) 
@@ -83,4 +86,5 @@ var addVendor = exports.addVendor = function(name, lat, long, zip, type, totalti
 //Begin Seeding!
 setTimeout(SeedTypes, 5000);
 setTimeout(addVendor, 5000);
+
 
