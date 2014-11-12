@@ -7,8 +7,6 @@ var jasmine = require('gulp-jasmine');
 var nodemon = require('gulp-nodemon');
 var jshint = require('gulp-jshint');
 
-
-
 var testFiles = [
   'server/**/*.js',
   'test/**/*.js'
@@ -28,7 +26,7 @@ gulp.task('test', function(){
 
 gulp.task('docs', function() {
   gulp.src(['server/*.js', 'server/**/*.js'])
-  .pipe(jsdoc('./docs'));
+    .pipe(jsdoc('./docs'));
 });
 
 gulp.task('develop', function(){
