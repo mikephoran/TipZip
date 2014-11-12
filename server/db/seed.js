@@ -1,13 +1,10 @@
 var User = require('./db').User;
 var Vendor = require('./db').Vendor;
 var Type = require('./db').Type;
+var Rating = require('./db').Rating;
 var sequelize = require('./db').sequelize;
 
-// var toronotoZips =  ["M4B 1B3", "M4B 1B4", "M4B 1B5", "M4B, 1B6", "M4B 1B7", "M4B 1B8",
-// "M4B 1C3", "M4B 1C4", "M4B 1C5", "M4B 1C6", "M4B 1C7", "M4B 1C8", "M4B 1C9", "M4B 1E1",
-// "M4B 1E7", "M4B 1E8", "M4B 1E9", "M4B 1G1"];
-
-var images = {
+var typeimages = {
   Art:  '',
   Music: '',
   Performance: '',
@@ -30,7 +27,7 @@ var SeedTypes = exports.SeedTypes = function() {
   } 
 }
 
-var addVendor = exports.addVendor = function(name, lat, long, zip, type, totaltip, pass, email, age, image, desc) {
+var addVendor = exports.addVendor = function(name, lat, long, zip, type, totaltip, pass, email, age, image, desc, callback) {
   console.log('Seeding Vendors')
 
   //set defaults for User Properties. Name and Zip should not be allowed to default though.
@@ -46,7 +43,7 @@ var addVendor = exports.addVendor = function(name, lat, long, zip, type, totalti
   lat = lat || -79.390919;
   type = type || 'Food';
   totaltip = totaltip || 0;
-  image = image || images[type];
+  image = image || typeimages[type];
   desc = desc || "Enter a Description";
 
   User
@@ -77,14 +74,55 @@ var addVendor = exports.addVendor = function(name, lat, long, zip, type, totalti
       }
     })
     .success(function(user, created) {
-      return userid;
+      callback(userid);
     }) 
   })
-}
+};
 
+var addUser = exports.addUser = function(name, pass, zip, email, age, callback) {
+  console.log('Seeding Vendors')
+
+  //set defaults for User Properties. Name and Zip should not be allowed to default though.
+  name = name || 'test';
+  name = name.split(' ').join('');
+  pass = pass || 'test';
+  zip = zip || "M4B 1B3";
+  email = email || name + '@test.com'
+  age = age || Math.floor(Math.random()*60 + 18);
+
+  User
+  .findOrCreate({
+    where: {username: name},
+    defaults: {
+      username: name, 
+      password: pass, 
+      email: email, 
+      zipcode: zip, 
+      age: age
+    }
+  })
+  .success(function(user, created) {
+    callback(userid);
+  })
+};
+
+var addReview = exports.addReview = function (rating, userid, vendorid, callback) {
+  Rating
+  .create({
+    rating: rating,
+    VendorId: vendorid,
+    UserId: userid
+  })
+  .success(function(user){
+    callback(user)
+  })
+};
+
+//Need to add Algorithm for pull data and using functions
 
 //Begin Seeding!
 setTimeout(SeedTypes, 5000);
 setTimeout(addVendor, 5000);
+setTimeout(addUser, 6000);
 
 
