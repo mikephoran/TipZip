@@ -1,9 +1,9 @@
 /*jslint node: true */
 /* jshint -W098 */
-
 var helpers = require('./main/helpers');
 var api = require('./api/api');
 var auth = require('./auth/auth');
+var multipart = require('connect-multiparty');
 
 var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -13,15 +13,22 @@ var authenticate = function(req, res, next) {
   }
 };
 
+var upload = multipart({
+  uploadDir: __dirname + '/../public/'
+});
+
 exports.apiRouter = function(app) {
-  // app.post('/vendor/add', authenticate, api.add);
-  // app.post('/vendor/update', authenticate, api.updateVendor);
-  // app.get('/vendor/get', authenticate, api.findAll);
-  // app.get('/vendor/:vendor', authenticate, api.findOne);
-  app.post('/vendor/add', api.add);
-  app.post('/vendor/update', api.updateVendor);
-  app.get('/vendor/get', api.findAll);
-  app.get('/vendor/:vendor', api.findOne);
+  app.post('/vendor/photo', authenticate, upload, api.photo)
+  app.post('/vendor/add', authenticate, api.add);
+  app.post('/vendor/update', authenticate, api.updateVendor);
+  app.get('/vendor', authenticate, api.findAll);
+  app.get('/vendor/:vendor', authenticate, api.findOne);
+  
+  // app.post('/vendor/photo', upload, api.photo);
+  // app.post('/vendor/add', api.add);
+  // app.post('/vendor/update', api.updateVendor);
+  // app.get('/vendor', api.findAll);
+  // app.get('/vendor/:vendor', api.findOne);
 };
 
 exports.authRouter = function(app) {
