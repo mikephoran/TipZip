@@ -1,7 +1,7 @@
-var User = require('../db/db').User;
-var Vendor = require('../db/db').Vendor;
-var Type = require('../db/db').Type
-var sequelize = require('../db/db').sequelize;
+var User = require('./db').User;
+var Vendor = require('./db').Vendor;
+var Type = require('./db').Type;
+var sequelize = require('./db').sequelize;
 
 // var toronotoZips =  ["M4B 1B3", "M4B 1B4", "M4B 1B5", "M4B, 1B6", "M4B 1B7", "M4B 1B8",
 // "M4B 1C3", "M4B 1C4", "M4B 1C5", "M4B 1C6", "M4B 1C7", "M4B 1C8", "M4B 1C9", "M4B 1E1",
@@ -17,6 +17,7 @@ var images = {
 };
 
 var SeedTypes = exports.SeedTypes = function() {
+  console.log('SEEDING THE TYPE!!!!!!!!!!!!!!!!!!!!!!!!!!!')
   var types = ['Art', 'Music', 'Perfomance', 'Food', 'Goods', 'Farmers Market'];
   for (var i=0; i<types.length; i++) {
     Type.build({
@@ -48,19 +49,38 @@ var addVendor = exports.addVendor = function(name, lat, long, zip, type, totalti
   desc = desc || "Enter a Description";
 
   User
-  .findOrCreate({username: name}, {password: pass, email: email, zip: zip, age: age})
+  .findOrCreate({
+    where: {
+      username: name
+    }
+  }, { defaults: {
+    username: name, 
+    password: pass, 
+    email: email, 
+    zip: zip, 
+    age: age
+  }
+  })
   .success(function(user, created) {
     var userid = user.values.id
     Vendor
-    .findOrCreate({UserId: userid}, {latitude: lat, longitude: long, type: type, totaltip: totaltip, image: image, description: desc})
+    .findOrCreate({where: {UserId: userid}}, {
+      UserId: userid, 
+      latitude: lat, 
+      longitude: long, 
+      type: type, 
+      totaltip: 
+      totaltip, 
+      image: image, 
+      description: desc})
     .success(function(user, created) {
       return userid;
-    } 
+    }) 
   })
 }
 
 
 //Begin Seeding!
-SeedTypes();
-console.log(addVendor());
+setTimeout(SeedTypes, 5000);
+setTimeout(addVendor, 5000);
 

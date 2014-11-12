@@ -24,7 +24,11 @@ var User = exports.User = sequelize.define('User', {
   password: Sequelize.STRING,
   email: Sequelize.STRING,
   zipcode: Sequelize.STRING,
-  age: Sequelize.INTEGER
+  age: Sequelize.INTEGER,
+  displayname: Sequelize.STRING,
+  firstname: Sequelize.STRING,
+  middlename: Sequelize.STRING,
+  lastname: Sequelize.STRING
 });
 
 // Vendor Model
