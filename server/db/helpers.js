@@ -8,14 +8,14 @@ var Vendor = require('./db').Vendor;
 var User = require('./db').User;
 
 /**
-* Finds a user in the database based on username or email;
+* Finds a user in the database based on username or email.
 * @function findUser
 * @memberof module:dbHelpers
 * @instance
 * @param {object} user Object containing user searching parameters.
 * @param {string} user.username (Optional if searching by email) Username of user your searching for.
 * @param {string} user.email (Optional if searching by username) Email of user your searching for.
-* @param {function} callback Callback function to be executed on result of query. 
+* @param {function} callback Function to be executed on result of the query. 
 */
 exports.findUser = function(user, callback) {
   var username = user.username;
@@ -25,10 +25,19 @@ exports.findUser = function(user, callback) {
   }).then(callback);
 };
 
-
-exports.findVendor = function(user, callback) {
-  var username = user.username;
-  var email = user.email || user.username;
+/**
+* Finds a vendor in the database based on username or email and returns all data on vendor.
+* @function findVendor
+* @memberof module:dbHelpers
+* @instance
+* @param {object} vendor Object containing vendor searching parameters.
+* @param {string} vendor.username (Optional if searching by email) Username of the vendor your searching for.
+* @param {string} vendor.email (Optional if searching by username) Email of the vendor your searching for.
+* @param {function} callback Function to be executed on result of the query. 
+*/
+exports.findVendor = function(vendor, callback) {
+  var username = vendor.username;
+  var email = vendor.email || vendor.username;
   exports.findUser(user, function(user) {
     Vendor.find({
       where: { UserId: user.id },
@@ -36,6 +45,16 @@ exports.findVendor = function(user, callback) {
   });
 };
 
+/**
+* Finds a vendor in the database based on username or email and returns public data.
+* @function findOne
+* @memberof module:dbHelpers
+* @instance
+* @param {object} user Object containing user searching parameters.
+* @param {string} user.username (Optional if searching by email) Username of user your searching for.
+* @param {string} user.email (Optional if searching by username) Email of user your searching for.
+* @param {function} callback Function to be executed on result of the query. 
+*/
 exports.findOne = function(user, callback) {
   var username = user.username;
   var email = user.email || user.username;
@@ -56,6 +75,13 @@ exports.findOne = function(user, callback) {
   }).then(callback);
 };
 
+/**
+* Finds all vendors in the database.
+* @function findAll
+* @memberof module:dbHelpers
+* @instance
+* @param {function} callback Function to be executed on results of the query. 
+*/
 exports.findAll = function(callback) {
   User.findAll({
     attributes: ['username'],

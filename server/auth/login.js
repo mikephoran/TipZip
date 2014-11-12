@@ -18,7 +18,7 @@ exports.logout = function(req, res, next) {
 /**
 * Checks to see if a password given by a user matches their Encrypted password stored in DB.
 * @function
-* @memberof module:auth_login
+* @memberof module:auth
 * @instance
 * @param {object} user User object profile to test against.
 * @param {string} user.password Password from user object profile.

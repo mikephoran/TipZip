@@ -11,7 +11,7 @@ var BPromise = require('bluebird');
 /**
 * Generates a new user and stores in DB
 * @function
-* @memberof module:auth_register
+* @memberof module:auth
 * @instance
 * @param {object} user User object profile to save to database.
 * @param {string} user.username Username of new user.

@@ -16,8 +16,8 @@ var authenticate = function(req, res, next) {
 exports.apiRouter = function(app) {
   // app.post('/vendor/add', authenticate, api.add);
   // app.post('/vendor/update', authenticate, api.updateVendor);
+  // app.get('/vendor/get', authenticate, api.findAll);
   // app.get('/vendor/:vendor', authenticate, api.findOne);
-  // app.get('/vendors', authenticate, api.findAll);
   app.post('/vendor/add', api.add);
   app.post('/vendor/update', api.updateVendor);
   app.get('/vendor/get', api.findAll);
