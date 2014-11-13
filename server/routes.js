@@ -4,6 +4,7 @@ var helpers = require('./main/helpers');
 var api = require('./api/api');
 var auth = require('./auth/auth');
 var multipart = require('connect-multiparty');
+var express = require('express');
 
 var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -43,4 +44,8 @@ exports.authRouter = function(app) {
     res.sendStatus(401);
   });
   app.post('/register', auth.register);
+};
+
+exports.managementRouter = function(app) {
+  app.use('/', express.static(__dirname + '/../public/management'));
 };

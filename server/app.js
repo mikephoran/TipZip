@@ -3,6 +3,7 @@
 var express = require('express');
 var apiRouter = require('./routes').apiRouter;
 var authRouter = require('./routes').authRouter;
+var managementRouter = require('./routes').managementRouter;
 var db = require('./db/db');
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -12,6 +13,7 @@ var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
 var seed = require('./db/seed');
+var subdomain = require('express-subdomain');
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
@@ -39,7 +41,7 @@ app.use(flash());
 
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', express.static(__dirname + '/../public'));
+// app.use('/', express.static(__dirname + '/../public'));
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
@@ -69,6 +71,10 @@ apiRouter(apiRoutes);
 var authRoutes = express.Router();
 app.use('/auth', authRoutes);
 authRouter(authRoutes);
+
+var managementRoutes = express.Router();
+app.use(subdomain('management', managementRoutes));
+managementRouter(managementRoutes);
 
 console.log('Listening on Port:', port);
 app.listen(port);
