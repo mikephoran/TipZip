@@ -21,14 +21,16 @@ exports.apiRouter = function(app) {
   app.post('/vendor/photo', authenticate, upload, api.photo)
   app.post('/vendor/add', authenticate, api.add);
   app.post('/vendor/update', authenticate, api.updateVendor);
-  app.get('/vendor', authenticate, api.findAll);
+  app.get('/vendor/status', authenticate, api.status);
   app.get('/vendor/:vendor', authenticate, api.findOne);
+  app.get('/vendor', authenticate, api.findAll);
   
   // app.post('/vendor/photo', upload, api.photo);
   // app.post('/vendor/add', api.add);
   // app.post('/vendor/update', api.updateVendor);
-  // app.get('/vendor', api.findAll);
+  // app.get('/vendor/status', api.status);
   // app.get('/vendor/:vendor', api.findOne);
+  // app.get('/vendor', api.findAll);
 };
 
 exports.authRouter = function(app) {
