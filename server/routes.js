@@ -47,5 +47,5 @@ exports.authRouter = function(app) {
 };
 
 exports.managementRouter = function(app) {
-  app.use('/', express.static(__dirname + '/../public/management'));
+  app.use('/', express.static(__dirname + '/../management'));
 };
