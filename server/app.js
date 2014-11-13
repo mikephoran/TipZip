@@ -12,6 +12,7 @@ var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
 var seed = require('./db/seed/seed');
+var populateDB = require('./db/seed/populateDB');
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
@@ -71,7 +72,7 @@ var authRoutes = express.Router();
 app.use('/auth', authRoutes);
 authRouter(authRoutes);
 
-var processData = require('./db/seed/seed').processData;
+var processData = require('./db/seed/populateDB').processData;
 app.post('/populate', function(req, res) {
   // console.log('Params:', req.params);
   // console.log('Body:', req.body);
