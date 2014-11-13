@@ -11,13 +11,13 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
-var seed = require('./db/seed');
+var seed = require('./db/seed/seed');
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
 var defaultCorsHeaders = {
-  'access-control-allow-origin': 'http://localhost:8100',
+  'access-control-allow-origin': '*',
   'access-control-allow-credentials': true,
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept',
@@ -66,9 +66,19 @@ var apiRoutes = express.Router();
 app.use('/api', apiRoutes);
 apiRouter(apiRoutes);
 
+
 var authRoutes = express.Router();
 app.use('/auth', authRoutes);
 authRouter(authRoutes);
+
+var processData = require('./db/seed/seed').processData;
+app.post('/populate', function(req, res) {
+  // console.log('Params:', req.params);
+  // console.log('Body:', req.body);
+  // console.log('bodykeys', Object.keys(req.body));
+  processData(JSON.parse(req.body.type), JSON.parse(req.body.result)); 
+  res.json({success: true, result: JSON.parse(req.body.type)});
+});
 
 console.log('Listening on Port:', port);
 app.listen(port);
