@@ -11,7 +11,7 @@
       }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,visualization&v=3.exp"></script>
-    <script src="jquery-2.1.1.min.js"></script>
+    <script src="js/jquery-2.1.1.min.js"></script>
 
     <script>
 var map;
@@ -80,7 +80,7 @@ function makeCall(results, i) {
       console.log(result)
       $.ajax({
         method: 'POST',
-        url: 'http://localhost:5000/populate',
+        url: '/populate',
         data: obj
       })
       .success(function(res) {

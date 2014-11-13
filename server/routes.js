@@ -47,9 +47,9 @@ exports.authRouter = function(app) {
 };
 
 exports.managementRouter = function(app) {
-  var processData = require('./db/seed/seed').processData;
+  var processData = require('./db/seed/populateDB').processData;
   app.use('/', express.static(__dirname + '/../management'));
-  
+
   app.post('/populate', function(req, res) {
     processData(JSON.parse(req.body.type), JSON.parse(req.body.result)); 
     res.json({success: true, result: JSON.parse(req.body.type)});

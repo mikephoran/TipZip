@@ -74,20 +74,9 @@ var authRoutes = express.Router();
 app.use('/auth', authRoutes);
 authRouter(authRoutes);
 
-<<<<<<< HEAD
 var managementRoutes = express.Router();
 app.use(subdomain('management', managementRoutes));
 managementRouter(managementRoutes);
-=======
-var processData = require('./db/seed/populateDB').processData;
-app.post('/populate', function(req, res) {
-  // console.log('Params:', req.params);
-  // console.log('Body:', req.body);
-  // console.log('bodykeys', Object.keys(req.body));
-  processData(JSON.parse(req.body.type), JSON.parse(req.body.result)); 
-  res.json({success: true, result: JSON.parse(req.body.type)});
-});
->>>>>>> DB Populate Complete
 
 console.log('Listening on Port:', port);
 app.listen(port);
