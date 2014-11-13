@@ -12,8 +12,8 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
-var seed = require('./db/seed');
 var subdomain = require('express-subdomain');
+var seed = require('./db/seed/seed');
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
@@ -67,6 +67,7 @@ app.get('/test', authenticate, function(req, res) {
 var apiRoutes = express.Router();
 app.use('/api', apiRoutes);
 apiRouter(apiRoutes);
+
 
 var authRoutes = express.Router();
 app.use('/auth', authRoutes);
