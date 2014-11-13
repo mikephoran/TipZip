@@ -70,7 +70,7 @@ exports.status = function(req, res) {
     res.json({
       success: true, 
       result: {
-        online: vendor.status |
+        online: vendor.status
       }
     });
   });
