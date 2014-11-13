@@ -31,6 +31,7 @@ exports.photo = function (req, res) {
 };
 
 exports.add = function(req, res) {
+  // helpers.findUser({username: 'ravendano'}, function(user) {
   helpers.findUser({username: req.user}, function(user) {
     Vendor.build({
       // image: '',
@@ -50,7 +51,35 @@ exports.add = function(req, res) {
 exports.findOne = function(req, res) {
   var user = {
     username: req.params.vendor,
-    email: req.params.vendor
+    email: req.params.vendor 
+  };
+  helpers.findOne(user, function(vendor) {
+    res.json({
+      success: true, 
+      result: vendor || []
+    });
+  });
+};
+
+exports.status = function(req, res) {
+  var user = {
+    username: req.body.vendor || req.user,
+    email: req.body.vendor || req.user
+  };
+  helpers.findOne(user, function(vendor) {
+    res.json({
+      success: true, 
+      result: {
+        online: vendor.status |
+      }
+    });
+  });
+};
+
+exports.findOne = function(req, res) {
+  var user = {
+    username: req.params.vendor || req.user,
+    email: req.params.vendor || req.user
   };
   helpers.findOne(user, function(vendor) {
     res.json({
