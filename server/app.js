@@ -34,15 +34,16 @@ app.use(function(req, res, next) {
 /*
 * END DEVELOPMENT ONLY 
 */
+
 app.use(cookieParser());
 app.use(session({ secret: 'TIPZIPWILLWIN' }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(__dirname + '/../public'));
+
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
@@ -65,18 +66,24 @@ app.get('/test', authenticate, function(req, res) {
 * END DEVELOPMENT ONLY 
 */
 
+/*
+* ==== ROUTERS ====
+*/
 var apiRoutes = express.Router();
-app.use('/api', apiRoutes);
-apiRouter(apiRoutes);
-
-
 var authRoutes = express.Router();
-app.use('/auth', authRoutes);
-authRouter(authRoutes);
-
 var managementRoutes = express.Router();
+
+app.use('/api', apiRoutes);
+app.use('/auth', authRoutes);
 app.use(subdomain('management', managementRoutes));
+
+apiRouter(apiRoutes);
+authRouter(authRoutes);
 managementRouter(managementRoutes);
 
-console.log('Listening on Port:', port);
+/*
+* ==== END ROUTERS ====
+*/
+
 app.listen(port);
+console.log('Listening on Port:', port);
