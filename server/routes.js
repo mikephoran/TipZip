@@ -9,20 +9,21 @@ var express = require('express');
 var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
     res.sendStatus(401);
-  } else {
-    next();
-  }
+    return;
+  } 
+  next();
 };
 
 var upload = multipart({
   uploadDir: __dirname + '/../public/'
 });
 
+/* ======= ROUTER: '/api' ======= */
 exports.apiRouter = function(app) {
-  app.post('/vendor/photo', authenticate, upload, api.photo)
-  app.post('/vendor/add', authenticate, api.add);
+  app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
+  app.post('/vendor/add', authenticate, api.addVendor);
   app.post('/vendor/update', authenticate, api.updateVendor);
-  app.get('/vendor/status', authenticate, api.status);
+  app.get('/vendor/status', authenticate, api.getStatus);
   app.get('/vendor/:vendor', authenticate, api.findOne);
   app.get('/vendor', authenticate, api.findAll);
   
@@ -34,6 +35,7 @@ exports.apiRouter = function(app) {
   // app.get('/vendor', api.findAll);
 };
 
+/* ======= ROUTER: '/auth' ======= */
 exports.authRouter = function(app) {
   app.post('/login', auth.login, function(req, res) {
     console.log('Logged In:', req.user, req.session);
@@ -46,12 +48,16 @@ exports.authRouter = function(app) {
   app.post('/register', auth.register);
 };
 
+/* ======= subdomain: 'management' ======= */
 exports.managementRouter = function(app) {
   var processData = require('./db/seed/populateDB').processData;
   app.use('/', express.static(__dirname + '/../management'));
 
   app.post('/populate', function(req, res) {
     processData(JSON.parse(req.body.type), JSON.parse(req.body.result)); 
-    res.json({success: true, result: JSON.parse(req.body.type)});
+    res.json({
+      success: true, 
+      result: JSON.parse(req.body.type)
+    });
   });
 };
