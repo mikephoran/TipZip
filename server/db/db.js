@@ -1,8 +1,24 @@
 /*jslint node: true */
 var Sequelize = require('sequelize');
-var sequelize = exports.sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
-  dialect: "postgres", 
-  port: 5432
+var config = require('../config/config.js');
+
+var isNative = false;
+var connectionString = config.dialect + '://' 
+                     + config.username + ':' 
+                     + config.password 
+                     + '@' + config.host + ':5432/' 
+                     + config.database;
+
+if(process.env.NODE_ENV){
+  connection_string = process.env.DATABASE_URL;
+  isNative = true;
+}
+
+var sequelize = exports.sequelize = new Sequelize(connectionString, {
+  logging: console.log,
+  logging: false,
+  protocol: 'postgres',
+  native: isNative
 });
 
 //Define Models
@@ -101,6 +117,16 @@ var Group = exports.Group = sequelize.define('Group', {
 // Group has multiple Vendors
 Group.hasMany(Vendor);
 Vendor.hasMany(Group);
+
+//Pedestrian Model
+var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
+mainroute: Sequelize.STRING,
+sideroute: Sequelize.STRING,
+latitude: Sequelize.FLOAT,
+longitude: Sequelize.FLOAT,
+pedestrianvol8hr: Sequelize.STRING,
+pedestrianvol24hr: Sequelize.STRING
+});
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
