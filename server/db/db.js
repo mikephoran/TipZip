@@ -70,6 +70,7 @@ Tip.belongsTo(Vendor);
 // Rating Model
 var Rating = exports.Rating = sequelize.define('Rating', {
   rating: Sequelize.INTEGER,
+  review: Sequelize.TEXT
 });
 
 // Vendor has one Rating, User has many Ratings tied to Vendors
