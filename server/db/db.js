@@ -34,7 +34,10 @@ var User = exports.User = sequelize.define('User', {
 // Vendor Model
 var Vendor = exports.Vendor = sequelize.define('Vendor', {
   image: Sequelize.STRING,
-  description: Sequelize.STRING,
+  description: {
+    type: Sequelize.STRING,
+    defaultValue: 'Enter a description'
+  },
   status: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
@@ -105,3 +108,4 @@ sequelize.sync({ force: true })
      console.log('It worked!');
    }
 });
+
