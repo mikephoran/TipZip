@@ -1,8 +1,23 @@
 /*jslint node: true */
 var Sequelize = require('sequelize');
-var sequelize = exports.sequelize = new Sequelize('tipzip', 'df', 'myPassword', {
-  dialect: "postgres", 
-  port: 5432
+
+var isNative = false;
+var connectionString = config.dialect + '://' 
+                     + config.username + ':' 
+                     + config.password 
+                     + '@' + config.host + ':5432/' 
+                     + config.database;
+
+if(process.env.NODE_ENV){
+  connection_string = process.env.DATABASE_URL;
+  isNative = true;
+}
+
+var sequelize = exports.sequelize = new Sequelize(connectionString, {
+  logging: console.log,
+  logging: false,
+  protocol: 'postgres',
+  native: isNative
 });
 
 //Define Models
