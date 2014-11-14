@@ -180,4 +180,3 @@ sequelize.sync({ force: false })
    } 
    console.log('It worked!');
 });
-

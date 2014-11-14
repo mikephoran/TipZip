@@ -5,6 +5,7 @@ var api = require('./api/api');
 var auth = require('./auth/auth');
 var multipart = require('connect-multiparty');
 var express = require('express');
+var payments = require('./payments/payments');
 
 var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -19,7 +20,7 @@ var upload = multipart({
 });
 
 /* ======= ROUTER: '/api' ======= */
-exports.apiRouter = function(app) {
+exports.api = function(app) {
   app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
   app.post('/vendor/add', authenticate, api.addVendor);
   app.post('/vendor/update', authenticate, api.updateVendor);
@@ -36,7 +37,7 @@ exports.apiRouter = function(app) {
 };
 
 /* ======= ROUTER: '/auth' ======= */
-exports.authRouter = function(app) {
+exports.auth = function(app) {
   app.post('/login', auth.login, function(req, res) {
     console.log('Logged In:', req.user, req.session);
     res.send(req.user);
@@ -49,7 +50,7 @@ exports.authRouter = function(app) {
 };
 
 /* ======= subdomain: 'management' ======= */
-exports.managementRouter = function(app) {
+exports.management = function(app) {
   var processData = require('./db/seed/populateDB').processData;
   app.use('/', express.static(__dirname + '/../management'));
 
@@ -61,3 +62,7 @@ exports.managementRouter = function(app) {
     });
   });
 };
+
+exports.payments = function(app) {
+  app.post('/save', authenticate, payments.save);
+}

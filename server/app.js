@@ -1,9 +1,7 @@
 /*jslint node: true */
 /* jshint -W098 */
 var express = require('express');
-var apiRouter = require('./routes').apiRouter;
-var authRouter = require('./routes').authRouter;
-var managementRouter = require('./routes').managementRouter;
+var routers = require('./routes');
 var db = require('./db/db');
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -72,14 +70,17 @@ app.get('/test', authenticate, function(req, res) {
 var apiRoutes = express.Router();
 var authRoutes = express.Router();
 var managementRoutes = express.Router();
+var paymentRoutes = express.Router();
 
 app.use('/api', apiRoutes);
 app.use('/auth', authRoutes);
+app.use('/payments', paymentRoutes);
 app.use(subdomain('management', managementRoutes));
 
-apiRouter(apiRoutes);
-authRouter(authRoutes);
-managementRouter(managementRoutes);
+routers.api(apiRoutes);
+routers.auth(authRoutes);
+routers.payments(paymentRoutes);
+routers.management(managementRoutes);
 
 /*
 * ==== END ROUTERS ====
