@@ -1,8 +1,4 @@
-var map;
-var infoWindow;
-var service;
-var type;
-var searchterm;
+var map, infoWindow, service, type, searchterm;
 
 function initialize() {
   type = $('title').text();
@@ -62,11 +58,11 @@ function makeCall(results, i) {
     }
 
     //Process details
-     console.log(result);
+    console.log(result);
     var obj = {
       type: JSON.stringify(type),
       result: JSON.stringify(result)
-    }
+    };
     
     $.ajax({
       method: 'POST',
