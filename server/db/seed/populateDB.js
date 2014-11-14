@@ -102,6 +102,7 @@ var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor
       //Parse Info for Creating Review
       var vendorid = vendor.values.id;
       var rating = review.rating;
+      //Uncomment review variable if you want to collect review text
       //var review = review.text;
 
       User

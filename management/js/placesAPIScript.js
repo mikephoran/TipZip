@@ -76,7 +76,7 @@ function makeCall(results, i) {
     //Increment array and request details for next place
     i++;
     if (results[i]) {
-      setTimeout(makeCall.bind(this, results, i), 2000);
+      setTimeout(makeCall.bind(this, results, i), 4000);
     } else {
       console.log('FINISHED PULLING DATA')
     }
