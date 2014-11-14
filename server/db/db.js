@@ -1,5 +1,6 @@
 /*jslint node: true */
 var Sequelize = require('sequelize');
+var config = require('../config/config.js');
 
 var isNative = false;
 var connectionString = config.dialect + '://' 
@@ -116,6 +117,16 @@ var Group = exports.Group = sequelize.define('Group', {
 // Group has multiple Vendors
 Group.hasMany(Vendor);
 Vendor.hasMany(Group);
+
+//Pedestrian Model
+var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
+mainroute: Sequelize.STRING,
+sideroute: Sequelize.STRING,
+latitude: Sequelize.FLOAT,
+longitude: Sequelize.FLOAT,
+pedestrianvol8hr: Sequelize.STRING,
+pedestrianvol24hr: Sequelize.STRING
+});
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
