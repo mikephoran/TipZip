@@ -7,3 +7,27 @@ before_script:
   - psql -c 'create database tipzip;' -U postgres
   - psql -U postgres -c 'create extension postgis;'
 script: gulp ci
+
+after_script:
+# Install the Heroku package (or the Heroku toolbelt)
+- npm install heroku
+# Add your Heroku git repo:
+- git remote add heroku git@heroku.com:tipzipserver.git
+# Turn off warnings about SSH keys:
+- echo "Host heroku.com" >> ~/.ssh/config
+- echo " StrictHostKeyChecking no" >> ~/.ssh/config
+- echo " CheckHostIP no" >> ~/.ssh/config
+- echo " UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+# Download and install Heroku toolbelt locally
+- wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+# Add a new SSH key to Heroku
+- yes | heroku keys:add
+# Push to Heroku!
+- yes | git push heroku master
+# Clears heroku keys again after pushing
+notifications:
+email:
+recipients:
+- terrildouglas@gmail.com
+on_success: never
+on_failure: always
