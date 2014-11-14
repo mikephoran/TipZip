@@ -1,9 +1,13 @@
 var map;
 var infoWindow;
 var service;
-var type = 'mexican'
+var type;
+var searchterm;
 
 function initialize() {
+  type = $('title').text();
+  searchterm = $('#searchterm').text();
+
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: new google.maps.LatLng(43.661165, -79.390919),
     zoom: 12,
@@ -24,14 +28,13 @@ function initialize() {
 
   infoWindow = new google.maps.InfoWindow();
   service = new google.maps.places.PlacesService(map);
-
   google.maps.event.addListenerOnce(map, 'bounds_changed', performSearch);
 }
 
 function performSearch() {
   var request = {
     bounds: map.getBounds(),
-    keyword: type
+    keyword: searchterm
   };
   service.radarSearch(request, callback);
 }
@@ -59,6 +62,7 @@ function makeCall(results, i) {
     }
 
     //Process details
+     console.log(result);
     var obj = {
       type: JSON.stringify(type),
       result: JSON.stringify(result)
@@ -66,7 +70,7 @@ function makeCall(results, i) {
     
     $.ajax({
       method: 'POST',
-      url: 'http://localhost:5000/populate',
+      url: 'http://management.app.dev:5000/populate',
       data: obj
     })
     .success(function(res) {
@@ -77,6 +81,8 @@ function makeCall(results, i) {
     i++;
     if (results[i]) {
       setTimeout(makeCall.bind(this, results, i), 2000);
+    } else {
+      console.log('FINISHED PULLING DATA')
     }
   });
 }

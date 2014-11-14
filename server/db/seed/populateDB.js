@@ -69,42 +69,44 @@ var addVendor = exports.addVendor = function(allData, callback) {
 
 var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor) {
 
-  for (var i=0; i<allData.reviews.length; i++) {
-    var review = allData.reviews[i];
-    
-    //Parse Info for Creating User
-    var name = review.author_name.split(' ').join('');
-    
-    if (name === "AGoogleUser") {
-    	continue;
-    }
-
-    var pass = 'test';
-    var email = name + '@test.com';
-    var zip = zipofvendor;
-    var age = Math.floor(Math.random()*60 + 18);
-    
-    //Parse Info for Creating Review
-    var vendorid = vendor.values.id;
-    var rating = review.rating;
-
-    User
-    .findOrCreate({
-      where: {username: name},
-      defaults: {
-        username: name, 
-        password: pass, 
-        email: email, 
-        zipcode: zip, 
-        age: age
+  if (allData.reviews) {
+    for (var i=0; i<allData.reviews.length; i++) {
+      var review = allData.reviews[i];
+      
+      //Parse Info for Creating User
+      var name = review.author_name.split(' ').join('');
+      
+      if (name === "AGoogleUser") {
+      	continue;
       }
-    })
-    .success(function(user, created) {
-      addReview(rating, user.values.id, vendorid);
-    })
 
+      var pass = 'test';
+      var email = name + '@test.com';
+      var zip = zipofvendor;
+      var age = Math.floor(Math.random()*60 + 18);
+      
+
+      //Parse Info for Creating Review
+      var vendorid = vendor.values.id;
+      var rating = review.rating;
+      //var review = review.text;
+
+      User
+      .findOrCreate({
+        where: {username: name},
+        defaults: {
+          username: name, 
+          password: pass, 
+          email: email, 
+          zipcode: zip, 
+          age: age
+        }
+      })
+      .success(function(user, created) {
+        addReview(rating, user.values.id, vendorid);
+      })
+    }
   }
-
 };
 
 var addReview = exports.addReview = function (rating, userid, vendorid) {
