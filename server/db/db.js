@@ -19,6 +19,7 @@ var sequelize = exports.sequelize = new Sequelize(connectionString, {
   logging: false,
   protocol: 'postgres',
   native: isNative
+
 });
 
 //Define Models
