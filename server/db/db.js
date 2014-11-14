@@ -2,25 +2,41 @@
 var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
-var isNative = false;
-var connectionString = config.dialect + '://' 
-                     + config.username + ':' 
-                     + config.password 
-                     + '@' + config.host + ':5432/' 
-                     + config.database;
-
-if(process.env.NODE_ENV){
-  connection_string = process.env.DATABASE_URL;
-  isNative = true;
+if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
+  var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
+}  else {
+  var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 }
 
-var sequelize = exports.sequelize = new Sequelize(connectionString, {
-  logging: console.log,
-  logging: false,
+sequelize = new Sequelize(match[5], match[1], match[2], {
+  dialect: 'postgres',
   protocol: 'postgres',
-  native: isNative
+  port: match[4],
+  host: match[3],
+  logging: true,
+  native: true
+})
 
-});
+//USE FOR LOCAL PG DATABASE
+// var isNative = false;
+// var connectionString = config.dialect + '://' 
+//                      + config.username + ':' 
+//                      + config.password 
+//                      + '@' + config.host + ':5432/' 
+//                      + config.database;
+
+// if(process.env.NODE_ENV){
+//   connection_string = process.env.DATABASE_URL;
+//   isNative = true;
+// }
+
+// var sequelize = exports.sequelize = new Sequelize(connectionString, {
+//   logging: console.log,
+//   logging: false,
+//   protocol: 'postgres',
+//   native: isNative
+// });
+
 
 //Define Models
 //Sequelize automatically adds columns 'id', 'createAt', 'updatedAt'
@@ -70,6 +86,31 @@ Vendor.belongsTo(User);
 
 User.hasMany(Vendor);
 Vendor.hasMany(User);
+
+//Credit Card Model
+var CreditCard = exports.Tip = sequelize.define('Tip', {
+  type: Sequelize.STRING,
+  lastfour: Sequelize.INTEGER,
+  address: Sequelize.STRING,
+  state: Sequelize.STRING,
+  zip: Sequelize.STRING,
+  token: Sequelize.STRING
+});
+
+User.hasMany(CreditCard);
+User.belongsTo(User);
+
+//Bank Model
+var Bank = exports.Bank = equelize.define('Bank', {
+  token: Sequelize.STRING,
+  lastfour: Sequelize.INTEGER,
+  address: Sequelize.STRING,
+  state: Sequelize.STRING,
+  zip: Sequelize.STRING
+})
+
+Vendor.hasMany(Bank);
+Bank.belongsTo(Vendor);
 
 // Tip Model
 var Tip = exports.Tip = sequelize.define('Tip', {
@@ -131,7 +172,7 @@ pedestrianvol24hr: Sequelize.STRING
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
-sequelize.sync({ force: true })
+sequelize.sync({ force: false })
 .complete(function(err) {
    if (err) {
      console.log('An error occurred while creating the table:', err);
