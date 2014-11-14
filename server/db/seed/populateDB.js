@@ -2,7 +2,10 @@ var User = require('../db').User;
 var Vendor = require('../db').Vendor;
 var Type = require('../db').Type;
 var Rating = require('../db').Rating;
+var TypesVendors = require('../db').TypesVendors;
+var TypesUsers = require('../db').TypesUsers;
 var sequelize = require('../db').sequelize;
+var SeedTypes = require('./seed').SeedTypes;
 
 var typeimages = {
   Art:  '',
@@ -60,9 +63,19 @@ var addVendor = exports.addVendor = function(allData, callback) {
       }
     })
     .success(function(vendor, created) {
+
+      TypesVendors.findOrCreate({
+        where: {VendorId: vendor.values.id},
+        defaults: {
+          VendorId: vendor.values.id,
+          TypeId: SeedTypes.indexOf(type)+1
+        }
+      })
+
       if(callback && created) {
         callback(allData, vendor, zipofvendor)
       }
+
     }) 
   })
 };
@@ -103,6 +116,15 @@ var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor
         }
       })
       .success(function(user, created) {
+
+        TypesUsers.findOrCreate({
+        where: {UserId: user.values.id},
+        defaults: {
+          UserId: user.values.id,
+          TypeId: SeedTypes.indexOf(allData.type)+1
+        }
+      })
+
         addReview(rating, user.values.id, vendorid);
       })
     }

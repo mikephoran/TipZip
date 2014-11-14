@@ -85,10 +85,13 @@ var Type = exports.Type = sequelize.define('Type', {
 });
 
 // Type is N:M with Users and with Vendors
-Type.hasMany(User);
-User.hasMany(Type);
-Type.hasMany(Vendor);
-Vendor.hasMany(Type);
+var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
+Type.hasMany(User, {through: TypesUsers});
+User.hasMany(Type, {through: TypesUsers});
+
+var TypesVendors = exports.TypesVendors = sequelize.define('TypesVendor', {});
+Type.hasMany(Vendor, {through: TypesVendors});
+Vendor.hasMany(Type, {through: TypesVendors});
 
 // Vendor Group Model
 var Group = exports.Group = sequelize.define('Group', {

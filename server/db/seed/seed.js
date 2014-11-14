@@ -4,9 +4,10 @@ var Type = require('../db').Type;
 var Rating = require('../db').Rating;
 var sequelize = require('../db').sequelize;
 
-var SeedTypes = exports.SeedTypes = function() {
+var types = exports.SeedTypes = ['Art', 'Music', 'Perfomance', 'Food', 'Goods', 'Farmers Market'];
+
+var SeedTypes = function() {
   console.log('Seeding Types')
-  var types = ['Art', 'Music', 'Perfomance', 'Food', 'Goods', 'Farmers Market'];
   for (var i=0; i<types.length; i++) {
     Type.build({
       type: types[i]
