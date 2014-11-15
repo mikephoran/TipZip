@@ -64,6 +64,10 @@ exports.addVendor = function(req, res) {
       if (err) {
         console.log('Error:', err);
       }
+      res.json({
+        success: true,
+        result: 'Vendor Successfully Created!'
+      });
     });
   });
 };
@@ -129,7 +133,7 @@ exports.findAll = function(req, res) {
   });
 };
 /**
-* Allows Currently authenticated vendor to update their vendor account information
+* Allows currently authenticated vendor to update their vendor account information
 * @function updateVendor
 * @memberof module:api
 * @instance
@@ -137,7 +141,9 @@ exports.findAll = function(req, res) {
 * @param {object} res Response Object
 */
 exports.updateVendor = function(req, res) {
-  var changes = req.body;
+  var changes = _.pick(req.body, [
+    'description'
+  ]);
   var vendor = {
     username: req.user, //|| 'ravendano',
     email: req.user //|| 'ravendano'
@@ -148,6 +154,38 @@ exports.updateVendor = function(req, res) {
       res.json({
         success: true,
         result: vendor
+      });
+    });
+  });
+};
+
+/**
+* Allows currently authenticated user to update their user account information
+* @function updateUser
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
+exports.updateUser = function(req, res) {
+  var changes = _.pick(req.body,[
+    'password',
+    'email',
+    'zipcode',
+    'displayname'
+  ]);
+
+  var user = {
+    username: req.user,
+    email: req.user
+  };
+
+  helpers.findUser(user, function(user) {
+    user.updateAttributes(changes)
+    .success(function() {
+      res.json({
+        success: true,
+        result: user
       });
     });
   });
