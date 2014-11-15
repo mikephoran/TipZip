@@ -6,7 +6,7 @@ before_script:
   - npm install -g gulp
   - psql -c 'create database tipzip;' -U postgres
   - psql -U postgres -c 'create extension postgis;'
-script: gulp ci
+#script: gulp ci
 
 after_script:
 # Install the Heroku package (or the Heroku toolbelt)
