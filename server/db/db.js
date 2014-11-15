@@ -2,40 +2,40 @@
 var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
-if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
-  var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
-}  else {
-  var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
-}
-
-sequelize = new Sequelize(match[5], match[1], match[2], {
-  dialect: 'postgres',
-  protocol: 'postgres',
-  port: match[4],
-  host: match[3],
-  logging: true,
-  native: true
-})
-
-//USE FOR LOCAL PG DATABASE
-// var isNative = false;
-// var connectionString = config.dialect + '://' 
-//                      + config.username + ':' 
-//                      + config.password 
-//                      + '@' + config.host + ':5432/' 
-//                      + config.database;
-
-// if(process.env.NODE_ENV){
-//   connection_string = process.env.DATABASE_URL;
-//   isNative = true;
+// if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
+//   var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
+// }  else {
+//   var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }
 
-// var sequelize = exports.sequelize = new Sequelize(connectionString, {
-//   logging: console.log,
-//   logging: false,
+// sequelize = new Sequelize(match[5], match[1], match[2], {
+//   dialect: 'postgres',
 //   protocol: 'postgres',
-//   native: isNative
+//   port: match[4],
+//   host: match[3],
+//   logging: true,
+//   native: true
 // });
+
+//USE FOR LOCAL PG DATABASE
+var isNative = false;
+var connectionString = config.dialect + '://' 
+                     + config.username + ':' 
+                     + config.password 
+                     + '@' + config.host + ':5432/' 
+                     + config.database;
+
+if(process.env.NODE_ENV){
+  connection_string = process.env.DATABASE_URL;
+  isNative = true;
+}
+
+var sequelize = exports.sequelize = new Sequelize(connectionString, {
+  logging: console.log,
+  logging: false,
+  protocol: 'postgres',
+  native: isNative
+});
 
 
 //Define Models
@@ -101,7 +101,7 @@ User.hasMany(CreditCard);
 User.belongsTo(User);
 
 //Bank Model
-var Bank = exports.Bank = equelize.define('Bank', {
+var Bank = exports.Bank = sequelize.define('Bank', {
   token: Sequelize.STRING,
   lastfour: Sequelize.INTEGER,
   address: Sequelize.STRING,
@@ -162,17 +162,17 @@ Vendor.hasMany(Group);
 
 //Pedestrian Model
 var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
-mainroute: Sequelize.STRING,
-sideroute: Sequelize.STRING,
-latitude: Sequelize.FLOAT,
-longitude: Sequelize.FLOAT,
-pedestrianvol8hr: Sequelize.STRING,
-pedestrianvol24hr: Sequelize.STRING
+  mainroute: Sequelize.STRING,
+  sideroute: Sequelize.STRING,
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT,
+  pedestrianvol8hr: Sequelize.STRING,
+  pedestrianvol24hr: Sequelize.STRING
 });
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
 .complete(function(err) {
    if (err) {
      console.log('An error occurred while creating the table:', err);

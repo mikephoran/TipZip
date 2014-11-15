@@ -24,16 +24,22 @@ exports.api = function(app) {
   app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
   app.post('/vendor/add', authenticate, api.addVendor);
   app.post('/vendor/update', authenticate, api.updateVendor);
+
   app.get('/vendor/status', authenticate, api.getStatus);
   app.get('/vendor/:vendor', authenticate, api.findOne);
   app.get('/vendor', authenticate, api.findAll);
-  
+
+  app.post('/user/update', authenticate, api.updateUser);
+
   // app.post('/vendor/photo', upload, api.photo);
   // app.post('/vendor/add', api.add);
   // app.post('/vendor/update', api.updateVendor);
+
   // app.get('/vendor/status', api.status);
   // app.get('/vendor/:vendor', api.findOne);
   // app.get('/vendor', api.findAll);
+
+  // app.post('/user/update', api.updateUser);
 };
 
 /* ======= ROUTER: '/auth' ======= */

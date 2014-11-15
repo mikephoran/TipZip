@@ -24,7 +24,7 @@ var SeedTypes = function() {
 }
 
 //Begin Seeding!
-setTimeout(SeedTypes, 50000);
+// setTimeout(SeedTypes, 50000);
 
 
 
