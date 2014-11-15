@@ -32,7 +32,7 @@ if(process.env.NODE_ENV){
 
 var sequelize = exports.sequelize = new Sequelize(connectionString, {
   logging: console.log,
-  logging: false,
+  logging: true,
   protocol: 'postgres',
   native: isNative
 });

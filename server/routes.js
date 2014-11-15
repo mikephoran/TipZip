@@ -16,7 +16,7 @@ var authenticate = function(req, res, next) {
 };
 
 var upload = multipart({
-  uploadDir: __dirname + '/../public/'
+  uploadDir: __dirname + '/../public/profileImages'
 });
 
 /* ======= ROUTER: '/api' ======= */

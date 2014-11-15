@@ -64,6 +64,10 @@ exports.addVendor = function(req, res) {
       if (err) {
         console.log('Error:', err);
       }
+      res.json({
+        success: true,
+        result: 'Vendor Successfully Created!'
+      });
     });
   });
 };
@@ -137,7 +141,9 @@ exports.findAll = function(req, res) {
 * @param {object} res Response Object
 */
 exports.updateVendor = function(req, res) {
-  var changes = req.body;
+  var changes = _.pick(req.body, [
+    'description'
+  ]);
   var vendor = {
     username: req.user, //|| 'ravendano',
     email: req.user //|| 'ravendano'
