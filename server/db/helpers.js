@@ -40,9 +40,7 @@ exports.findVendor = function(vendor, callback) {
     username: vendor.username,
     email: vendor.email || vendor.username
   };
-  console.log('USERSSS', user);
   exports.findUser(user, function(user) {
-    console.log('USERSSS2', user);
     Vendor.find({
       where: { UserId: user.id },
     }).then(callback);
