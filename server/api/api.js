@@ -63,10 +63,19 @@ exports.addVendor = function(req, res) {
     .complete(function(err) {
       if (err) {
         console.log('Error:', err);
+        res.json({
+          success: false,
+          result: 'Error: Vendor profile creation unsuccessful.',
+          user: req.user,
+          isVendor: false
+        });
+        return;
       }
       res.json({
         success: true,
-        result: 'Vendor Successfully Created!'
+        result: 'Vendor Successfully Created!',
+        user: req.user,
+        isVendor: true
       });
     });
   });
