@@ -9,6 +9,20 @@ var bcrypt = require('bcrypt');
 var BPromise = require('bluebird');
 
 
+exports.isVendor = function(req, res, next) {
+  var user = { username: req.body.username };
+  helpers.findVendor(user, function(vendor) {
+    if (vendor) {
+      req.isVendor = true;
+      next();
+      console.log('HEYVENDOR');
+      return;
+    }
+    console.log("HEY NO VENDOR");
+    req.isVendor = false;
+    next();
+  });
+};
 exports.login = passport.authenticate('local');
 exports.logout = function(req, res, next) {
   req.logout();

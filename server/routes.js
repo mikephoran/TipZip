@@ -44,9 +44,9 @@ exports.api = function(app) {
 
 /* ======= ROUTER: '/auth' ======= */
 exports.auth = function(app) {
-  app.post('/login', auth.login, function(req, res) {
-    console.log('Logged In:', req.user, req.session);
-    res.send(req.user);
+  app.post('/login', auth.isVendor, auth.login, function(req, res) {
+    console.log('Logged In:', req.user, req.session, 'type:', req.isVendor);
+    res.json({user: req.user, isVendor: req.isVendor});
   });
   app.post('/logout', auth.logout, function(req, res) {
     console.log('Logged Out:', req.user, req.session);

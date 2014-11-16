@@ -63,10 +63,19 @@ exports.addVendor = function(req, res) {
     .complete(function(err) {
       if (err) {
         console.log('Error:', err);
+        res.json({
+          success: false,
+          result: 'Error: Vendor profile creation unsuccessful.',
+          user: req.user,
+          isVendor: false
+        });
+        return;
       }
       res.json({
         success: true,
-        result: 'Vendor Successfully Created!'
+        result: 'Vendor Successfully Created!',
+        user: req.user,
+        isVendor: true
       });
     });
   });
@@ -168,12 +177,16 @@ exports.updateVendor = function(req, res) {
 * @param {object} res Response Object
 */
 exports.updateUser = function(req, res) {
-  var changes = _.pick(req.body,[
-    'password',
-    'email',
-    'zipcode',
-    'displayname'
-  ]);
+  var changes = {
+    displayname: req.body.displayName,
+    firstname: req.body.firstName,
+    middlename: req.body.middleName,
+    lastname: req.body.lastName,
+    email: req.body.email,
+    zipcode: req.body.zipcode,
+    age: req.body.age
+  };
+  console.log(changes);
 
   var user = {
     username: req.user,
