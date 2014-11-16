@@ -15,10 +15,8 @@ exports.isVendor = function(req, res, next) {
     if (vendor) {
       req.isVendor = true;
       next();
-      console.log('HEYVENDOR');
       return;
     }
-    console.log("HEY NO VENDOR");
     req.isVendor = false;
     next();
   });
