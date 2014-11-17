@@ -6,6 +6,7 @@ var auth = require('./auth/auth');
 var multipart = require('connect-multiparty');
 var express = require('express');
 var payments = require('./payments/payments');
+var config = require('./config/config');
 
 var authenticate = function(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -16,30 +17,29 @@ var authenticate = function(req, res, next) {
 };
 
 var upload = multipart({
-  uploadDir: __dirname + '/../public/profileImages'
+  uploadDir: __dirname + '/..' + config.images
 });
 
 /* ======= ROUTER: '/api' ======= */
 exports.api = function(app) {
-  app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
-  app.post('/vendor/add', authenticate, api.addVendor);
-  app.post('/vendor/update', authenticate, api.updateVendor);
+  // app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
+  // app.post('/vendor/add', authenticate, api.addVendor);
+  // app.post('/vendor/update', authenticate, api.updateVendor);
+  // app.get('/vendor/status', authenticate, api.getStatus);
+  // app.get('/vendor/get', authenticate, api.findAll);
+  // app.get('/vendor/trending', authenticate, api.findOne);
+  // app.get('/vendor/:vendor', authenticate, api.findOne);
 
-  app.get('/vendor/status', authenticate, api.getStatus);
-  app.get('/vendor/:vendor', authenticate, api.findOne);
-  app.get('/vendor', authenticate, api.findAll);
+  app.post('/user/update', api.updateUser);
+  app.post('/vendor/photo', upload, api.uploadPhoto)
+  app.post('/vendor/add', api.addVendor);
+  app.post('/vendor/update', api.updateVendor);
+  app.get('/vendor/status', api.getStatus);
+  app.get('/vendor/get', api.findAll);
+  // app.get('/vendor/trending', api.findOne);
+  app.get('/vendor/:vendor', api.findOne);
 
-  app.post('/user/update', authenticate, api.updateUser);
-
-  // app.post('/vendor/photo', upload, api.photo);
-  // app.post('/vendor/add', api.add);
-  // app.post('/vendor/update', api.updateVendor);
-
-  // app.get('/vendor/status', api.status);
-  // app.get('/vendor/:vendor', api.findOne);
-  // app.get('/vendor', api.findAll);
-
-  // app.post('/user/update', api.updateUser);
+  app.post('/user/update', api.updateUser);
 };
 
 /* ======= ROUTER: '/auth' ======= */
