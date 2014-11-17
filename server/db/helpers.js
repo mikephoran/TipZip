@@ -26,6 +26,24 @@ exports.findUser = function(user, callback) {
 };
 
 /**
+* Finds a user in the database based on username or email and returns all data (vendor + personal).
+* @function getPersonal
+* @memberof module:dbHelpers
+* @instance
+* @param {object} user Object containing user searching parameters.
+* @param {string} user.username (Optional if searching by email) Username of user your searching for.
+* @param {string} user.email (Optional if searching by username) Email of user your searching for.
+* @param {function} callback Function to be executed on result of the query. 
+*/
+exports.getPersonal = function(user, callback) {
+  var username = user.username;
+  var email = user.email || user.username;
+  User.find({
+    where: sequelize.or({ username: username }, { email: email }),
+    include: Vendor
+  }).then(callback);
+};
+/**
 * Finds a vendor in the database based on username or email and returns all data on vendor.
 * @function findVendor
 * @memberof module:dbHelpers
@@ -62,7 +80,10 @@ exports.findOne = function(user, callback) {
   var email = user.email || user.username;
   User.find({
     where: sequelize.or({ username: username }, { email: email }),
-    attributes: ['username'],
+    attributes: [
+      'username',
+      'displayname'
+    ],
     include: {
       model: Vendor, 
       attributes: [
@@ -86,7 +107,10 @@ exports.findOne = function(user, callback) {
 */
 exports.findAll = function(callback) {
   User.findAll({
-    attributes: ['username'],
+    attributes: [
+      'username',
+      'displayname'
+    ],
     include: {
       model: Vendor, 
       attributes: [

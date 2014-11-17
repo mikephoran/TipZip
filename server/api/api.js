@@ -106,13 +106,13 @@ exports.getStatus = function(req, res) {
 
 /**
 * Allows a user (or vendor) to grab public information for a single vendor 
-* @function findOne
+* @function getOne
 * @memberof module:api
 * @instance
 * @param {object} req Request Object
 * @param {object} res Response Object
 */
-exports.findOne = function(req, res) {
+exports.getOne = function(req, res) {
   var user = {
     username: req.params.vendor || req.user,
     email: req.params.vendor || req.user
@@ -127,13 +127,13 @@ exports.findOne = function(req, res) {
 
 /**
 * Allows a user (or vendor) to grab public information for all vendors (Filter Constraints WIP)
-* @function findAll
+* @function getAll
 * @memberof module:api
 * @instance
 * @param {object} req Request Object
 * @param {object} res Response Object
 */
-exports.findAll = function(req, res) {
+exports.getAll = function(req, res) {
   helpers.findAll(function(vendors) {
     res.json({
       success: true,
@@ -149,6 +149,28 @@ exports.findAll = function(req, res) {
 * @param {object} req Request Object
 * @param {object} res Response Object
 */
+
+/**
+* Allows a user (or vendor) to grab all of their information
+* @function getPersonal
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
+exports.getPersonal = function(req, res) {
+  var user = {
+    username: req.user,
+    email: req.user
+  };
+  helpers.getPersonal(user, function(vendor) {
+    res.json({
+      success: true, 
+      result: vendor || []
+    });
+  });
+};
+
 exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description'
