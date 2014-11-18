@@ -52,6 +52,7 @@ exports.uploadPhoto = function (req, res) {
 */
 exports.addVendor = function(req, res) {
   // helpers.findUser({username: 'ravendano'}, function(user) {
+  console.log(req.body);
   helpers.findUser({username: req.user}, function(user) {
     Vendor.build({
       // image: '',
