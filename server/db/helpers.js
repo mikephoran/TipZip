@@ -106,21 +106,42 @@ exports.findOne = function(user, callback) {
 * @param {function} callback Function to be executed on results of the query. 
 */
 exports.findAll = function(callback) {
-  User.findAll({
+  Vendor.findAll({
     attributes: [
-      'username',
-      'displayname'
+      'image',
+      'description',
+      'status',
+      'latitude',
+      'longitude',
+      'createdAt'
     ],
     include: {
-      model: Vendor, 
+      model: User,
       attributes: [
-        'image',
-        'description',
-        'status',
-        'latitude',
-        'longitude',
-        'createdAt'
+        'username',
+        'displayname',
       ]
     }
   }).then(callback);
 };
+
+// exports.findAll = function(callback) {
+//   User.findAll({
+//     attributes: [
+//       'username',
+//       'displayname'
+//     ],
+//     include: {
+//       model: Vendor, 
+//       as: 'User',
+//       attributes: [
+//         'image',
+//         'description',
+//         'status',
+//         'latitude',
+//         'longitude',
+//         'createdAt'
+//       ]
+//     }
+//   }).then(callback);
+// };

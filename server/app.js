@@ -40,7 +40,7 @@ app.use(passport.session());
 app.use(flash());
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', express.static(__dirname + '/../public/profileImages'));
+app.use('/', express.static(__dirname + '/../public/'));
 
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
