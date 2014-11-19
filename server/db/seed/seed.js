@@ -20,11 +20,11 @@ var SeedTypes = function() {
         console.log('Error:', err)
       }
     });
-  } 
+  }
 }
 
 //Begin Seeding!
-// setTimeout(SeedTypes, 50000);
+// setTimeout(SeedTypes, 20000);
 
 
 
