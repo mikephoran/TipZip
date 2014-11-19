@@ -200,17 +200,16 @@ exports.updateVendor = function(req, res) {
 * @param {object} res Response Object
 */
 exports.updateUser = function(req, res) {
-  var changes = {
-    displayname: req.body.displayName,
-    firstname: req.body.firstName,
-    middlename: req.body.middleName,
-    lastname: req.body.lastName,
-    email: req.body.email,
-    zipcode: req.body.zipcode,
-    age: req.body.age
-  };
+  var changes = _.pick(req.body, [
+    'displayname',
+    'firstname',
+    'middlename',
+    'lastname',
+    'email',
+    'zipcode',
+    'age'
+  ]);
   console.log(changes);
-
   var user = {
     username: req.user,
     email: req.user
