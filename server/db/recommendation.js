@@ -5,7 +5,7 @@ var sequelize = require('./db').sequelize;
 
 var rec = null;
 
-var findRecommendation = function(requestedUser) {
+var findRecommendation = exports.findRecommendation = function(requestedUser) {
 
   var closestUser = null;
 
@@ -58,13 +58,13 @@ var findRecommendation = function(requestedUser) {
         nearestNeighbor = findMostSimilar(userinfo, result);
       }
       Rating.findAll({
-        where: sequelize.and({UserId: nearestNeighbor.User}, {rating: {gt: 3}}, {VendorId: {ne: vendors.vendor0[0]}}, {VendorId: {ne: vendors.vendor1[0]}}, {VendorId: {ne: vendors.vendor2[0]}}),
+        where: sequelize.and({UserId: nearestNeighbor.User}, {rating: {gt: 3}}, {VendorId: {ne: vendors[0]}}, {VendorId: {ne: vendors[1]}}, {VendorId: {ne: vendors[2]}}),
         order: 'rating DESC'
       }).success(function(nearestNeighbor_ratings) {
         if (nearestNeighbor_ratings.length > 0) {
           var result = [];
           for (var i=0; i<nearestNeighbor_ratings.length; i++) {
-            if (vendors.indexOf(nearestNeighbor_ratings[i].dataValues.VendorId > 0) {
+            if (vendors.indexOf(nearestNeighbor_ratings[i].dataValues.VendorId > 0)) {
               result.push(nearestNeighbor_ratings[i].dataValues.VendorId);
             }
           }
@@ -110,3 +110,5 @@ var findMostSimilar = function(user, neighbors) {
 
   return result;
 };
+
+findRecommendation(4);
