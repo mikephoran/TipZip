@@ -111,4 +111,5 @@ var findMostSimilar = function(user, neighbors) {
   return result;
 };
 
-findRecommendation(4);
+// Testing the Algo with User # 4: 
+// findRecommendation(4);
