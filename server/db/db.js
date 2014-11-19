@@ -3,40 +3,40 @@ var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
 //UNCOMMENT TO LINE 19 FOR HEROKU PRODUCTION PG DATABASE
-if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
-  var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
-}  else {
-  var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
-}
-
-var sequelize = exports.sequelize = new Sequelize(match[5], match[1], match[2], {
-  dialect: 'postgres',
-  protocol: 'postgres',
-  port: match[4],
-  host: match[3],
-  logging: true,
-  native: true
-});
-
-//UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
-// var isNative = false;
-// var connectionString = config.dialect + '://' 
-//                      + config.username + ':' 
-//                      + config.password 
-//                      + '@' + config.host + ':5432/' 
-//                      + config.database;
-
-// if(process.env.NODE_ENV){
-//   connection_string = process.env.DATABASE_URL;
-//   isNative = true;
+// if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
+//   var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
+// }  else {
+//   var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }
 
-// var sequelize = exports.sequelize = new Sequelize(connectionString, {
-//   logging: console.log,
-//   logging: true,
+// var sequelize = exports.sequelize = new Sequelize(match[5], match[1], match[2], {
+//   dialect: 'postgres',
 //   protocol: 'postgres',
-//   native: isNative
+//   port: match[4],
+//   host: match[3],
+//   logging: true,
+//   native: true
 // });
+
+//UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
+var isNative = false;
+var connectionString = config.dialect + '://' 
+                     + config.username + ':' 
+                     + config.password 
+                     + '@' + config.host + ':5432/' 
+                     + config.database;
+
+if(process.env.NODE_ENV){
+  connection_string = process.env.DATABASE_URL;
+  isNative = true;
+}
+
+var sequelize = exports.sequelize = new Sequelize(connectionString, {
+  logging: console.log,
+  logging: true,
+  protocol: 'postgres',
+  native: isNative
+});
 
 
 //Define Models
