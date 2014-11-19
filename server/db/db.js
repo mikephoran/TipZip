@@ -181,3 +181,9 @@ sequelize.sync({ force: false })
    } 
    console.log('It worked!');
 });
+
+
+//Clean Up Ratings Table By Removing Duplicate Reviews
+sequelize.query('DELETE FROM "Ratings" WHERE id NOT IN (SELECT MIN(id) FROM "Ratings" GROUP BY "UserId", "VendorId")').success(function(result) {
+  console.log('Duplicate Reviews Deleted!');
+});
