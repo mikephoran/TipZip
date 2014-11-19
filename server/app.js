@@ -17,16 +17,17 @@ var seedPedestiran = require('./db/seed/pedestrian/seedPedestrian');
 /*
 * DEVELOPMENT ONLY - NOT NEEDED FOR IONIC BUILD
 */
-var defaultCorsHeaders = {
-  'access-control-allow-origin': 'http://localhost:8100',
-  'access-control-allow-credentials': true,
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10
-};
+// var defaultCorsHeaders = {
+//   'access-control-allow-origin': 'http://localhost:8100',
+//   // 'access-control-allow-origin': '*',
+//   'access-control-allow-credentials': true,
+//   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+//   'access-control-allow-headers': 'content-type, accept',
+//   'access-control-max-age': 10
+// };
 
 app.use(function(req, res, next) {
-  res.header(defaultCorsHeaders);
+  // res.header(defaultCorsHeaders);
   next();
 });
 /*

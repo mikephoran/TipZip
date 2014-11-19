@@ -22,27 +22,27 @@ var upload = multipart({
 
 /* ======= ROUTER: '/api' ======= */
 exports.api = function(app) {
-  // app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
-  // app.post('/vendor/add', authenticate, api.addVendor);
-  // app.post('/vendor/update', authenticate, api.updateVendor);
-  // app.get('/vendor/status', authenticate, api.getStatus);
-  // app.get('/vendor/get', authenticate, api.getAll);
+  app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
+  app.post('/vendor/add', authenticate, api.addVendor);
+  app.post('/vendor/update', authenticate, api.updateVendor);
+  app.get('/vendor/status', authenticate, api.getStatus);
+  app.get('/vendor/get', authenticate, api.getAll);
   // app.get('/vendor/trending', authenticate);
-  // app.get('/vendor/:vendor', authenticate, api.getOne);
+  app.get('/vendor/:vendor', authenticate, api.getOne);
 
-  // app.post('/user/update', authenticate, api.updateUser);
-  // app.get('/user/personal', authenticate, api.getPersonal);
+  app.post('/user/update', authenticate, api.updateUser);
+  app.get('/user/personal', authenticate, api.getPersonal);
 
-  app.post('/vendor/photo', upload, api.uploadPhoto)
-  app.post('/vendor/add', api.addVendor);
-  app.post('/vendor/update', api.updateVendor);
-  app.get('/vendor/status', api.getStatus);
-  app.get('/vendor/get', api.getAll);
-  // app.get('/vendor/trending');
-  app.get('/vendor/:vendor', api.getOne);
+  // app.post('/vendor/photo', upload, api.uploadPhoto)
+  // app.post('/vendor/add', api.addVendor);
+  // app.post('/vendor/update', api.updateVendor);
+  // app.get('/vendor/status', api.getStatus);
+  // app.get('/vendor/get', api.getAll);
+  // // app.get('/vendor/trending');
+  // app.get('/vendor/:vendor', api.getOne);
 
-  app.post('/user/update', api.updateUser);
-  app.get('/user/personal', api.getPersonal);
+  // app.post('/user/update', api.updateUser);
+  // app.get('/user/personal', api.getPersonal);
 };
 
 /* ======= ROUTER: '/auth' ======= */
