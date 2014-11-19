@@ -2,13 +2,14 @@
 var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
+//UNCOMMENT TO LINE 19 FOR HEROKU PRODUCTION PG DATABASE
 // if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
 //   var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }  else {
 //   var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }
 
-// sequelize = new Sequelize(match[5], match[1], match[2], {
+// var sequelize = exports.sequelize = new Sequelize(match[5], match[1], match[2], {
 //   dialect: 'postgres',
 //   protocol: 'postgres',
 //   port: match[4],
@@ -17,7 +18,7 @@ var config = require('../config/config.js');
 //   native: true
 // });
 
-//USE FOR LOCAL PG DATABASE
+//UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
 var isNative = false;
 var connectionString = config.dialect + '://' 
                      + config.username + ':' 
@@ -132,7 +133,7 @@ var Rating = exports.Rating = sequelize.define('Rating', {
 });
 
 // Vendor has one Rating, User has many Ratings tied to Vendors
-Vendor.hasOne(Rating);
+Vendor.hasMany(Rating);
 Rating.belongsTo(Vendor);
 User.hasMany(Rating);
 Rating.belongsTo(User);
@@ -172,11 +173,17 @@ var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
-sequelize.sync({ force: true })
+sequelize.sync({ force: false })
 .complete(function(err) {
    if (err) {
      console.log('An error occurred while creating the table:', err);
      return;
    } 
    console.log('It worked!');
+});
+
+
+//Clean Up Ratings Table By Removing Duplicate Reviews
+sequelize.query('DELETE FROM "Ratings" WHERE id NOT IN (SELECT MIN(id) FROM "Ratings" GROUP BY "UserId", "VendorId")').success(function(result) {
+  console.log('Duplicate Reviews Deleted!');
 });
