@@ -59,6 +59,8 @@ var User = exports.User = sequelize.define('User', {
   email: Sequelize.STRING,
   zipcode: Sequelize.STRING,
   age: Sequelize.INTEGER,
+  latitude: Sequelize.FLOAT,
+  longitude: Sequelize.FLOAT,
   displayname: Sequelize.STRING,
   firstname: Sequelize.STRING,
   middlename: Sequelize.STRING,
