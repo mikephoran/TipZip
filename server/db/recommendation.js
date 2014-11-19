@@ -1,14 +1,11 @@
 var User = require('./db').User;
 var Vendor = require('./db').Vendor;
-var Type = require('./db').Type;
 var Rating = require('./db').Rating;
-var TypesVendors = require('./db').TypesVendors;
-var TypesUsers = require('./db').TypesUsers;
 var sequelize = require('./db').sequelize;
 
 var rec = null;
 
-var UsersWithSameReviews = function(requestedUser) {
+var findRecommendation = function(requestedUser) {
 
   var closestUser = null;
 
@@ -19,20 +16,23 @@ var UsersWithSameReviews = function(requestedUser) {
   .success(function(ratings) {
     if (ratings.length < 3) {
       closestUser = null;
-      rec = 'You need to have reviewed at least 3 vendors!'
+      rec = null;
+      console.log('\n You need to review more vendors to receive a recommendation! \n')
       return 
     }
 
-    var top3 = ratings.slice(0,4);
-    var vendor1 = top3[0].VendorId;
-    var vendor2 = top3[1].VendorId;
-    var vendor3 = top3[2].VendorId;
-    var userinfo = {User: requestedUser, Vendor1: top3[0].rating, Vendor2: top3[1].rating, Vendor3: top3[2].rating};
+    var vendors = {};
+   
+    for (var i=0; i<ratings.length; i++) {
+      vendors["vendor"+i] = [ratings[i].VendorId, ratings[i].rating];
+    }
 
-    console.log('vendor1', vendor1, 'vendor2', vendor2, 'vendor3', vendor3);
+    var userinfo = {User: requestedUser, Vendor1: vendors.vendor0[1], Vendor2: vendors.vendor1[1], Vendor3: vendors.vendor2[1]};
+
+    console.log('vendor0', vendors.vendor0[0], 'vendor1', vendors.vendor1[0], 'vendor2', vendors.vendor2[0]);
 
     Rating.findAll({
-      where: {VendorId: [vendor1, vendor2, vendor3]},
+      where: {VendorId: [vendors.vendor0[0], vendors.vendor1[0], vendors.vendor2[0]]},
       order: '"UserId", "VendorId"'
     }).success(function(ratings){
       var result = [];
@@ -45,29 +45,31 @@ var UsersWithSameReviews = function(requestedUser) {
       }
       console.log('User Being Queried', userinfo);
       console.log('Neighbors', result);
-      if(!result) {
+      if(result.length === 0) {
         closestUser = null;
+        rec = closestUser;
+        console.log('No Neighbors Found')
+        return;
       } else if (result.length === 1 ) {
         closestUser = result[0].User;
-        console.log(closestUser);
       } else {
         closestUser = findMostSimilar(userinfo, result);
-        console.log(closestUser);
       }
-
-      if (closestUser) {
-        Rating.findAll({
-          where: sequelize.and({UserId: closestUser.User}, {rating: {gt: 3}}, {VendorId: {ne: vendor1}}, {VendorId: {ne: vendor2}}, {VendorId: {ne: vendor3}}),
-          order: 'rating'
-        }).success(function(ratings) {
+      Rating.findAll({
+        where: sequelize.and({UserId: closestUser.User}, {rating: {gt: 3}}, {VendorId: {ne: vendors.vendor0[0]}}, {VendorId: {ne: vendors.vendor1[0]}}, {VendorId: {ne: vendors.vendor2[0]}}),
+        order: 'rating DESC'
+      }).success(function(ratings) {
+        if (ratings.length > 0) {
           var result = [];
           for (var i=0; i<ratings.length; i++) {
             result.push(ratings[i].dataValues.VendorId);
           }
           rec = result;
-          console.log(rec);
-        })
-      }
+        } else {
+          rec = null;
+        }
+        console.log('\n RECOMMENDED VENDORS: ', rec, '\n');
+      })
     })
   })
 };
@@ -106,7 +108,6 @@ var findMostSimilar = function(user, neighbors) {
 };
 
 
-UsersWithSameReviews(4);
 
 
 
