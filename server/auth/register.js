@@ -7,6 +7,7 @@ var helpers = require('../db/helpers');
 var User = require('../db/db').User;
 var bcrypt = require('bcrypt');
 var BPromise = require('bluebird');
+var checkPassword = require('./login').checkPassword;
 
 /**
 * Generates a new user and stores in DB
@@ -34,7 +35,57 @@ var generateUser = function(user) {
   });
 };
 
-module.exports = function(req, res) {
+/**
+* Generates a new user and stores in DB
+* @function
+* @memberof module:auth
+* @instance
+* @param {object} user User object profile to save to database.
+* @param {string} user.username Username of new user.
+* @param {string} user.email Email of new user.
+* @param {object} password Password Object for User.
+* @param {string} password.oldpw Old Password.
+* @param {string} password.newpw New Password.
+*/
+var changePassword = function(user, password) {
+  return new BPromise(function(resolve) {
+    helpers.getPersonal(user, function(user) {
+      helpers.checkPassword(user, password.oldpw)
+      .then(function(result) {
+        if (result) {
+          bcrypt.hash(password.newpw, 10, function(err, hash) {
+            user.updateAttributes({password: hash})
+            .success(resolve);
+          });
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  })
+};
+
+exports.changePassword = function(req, res) {
+  var user = {
+    username: req.user,
+    email: req.user
+  };
+  var password = {
+    oldpw: req.body.oldPassword,
+    newpw: req.body.newPassword
+  };
+  changePassword(user, password)
+  .then(function(err) {
+    if (err) {
+      console.log('Password Change Failure:', err);
+      res.json({success: false, result: 'Invalid Password'});
+      return;
+    }
+    console.log('Password Change Success!');
+    res.json({success: true, result: 'Password Change Success'});
+  })
+}
+exports.register = function(req, res) {
   var newUser = {
     username: req.body.username,
     password: req.body.password,
@@ -52,3 +103,4 @@ module.exports = function(req, res) {
     });
   });
 };
+
