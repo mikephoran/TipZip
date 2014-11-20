@@ -62,7 +62,7 @@ var changePassword = function(user, password) {
         }
       });
     });
-  })
+  });
 };
 
 exports.changePassword = function(req, res) {
@@ -83,8 +83,9 @@ exports.changePassword = function(req, res) {
     }
     console.log('Password Change Success!');
     res.json({success: true, result: 'Password Change Success'});
-  })
-}
+  });
+};
+
 exports.register = function(req, res) {
   var newUser = {
     username: req.body.username,
