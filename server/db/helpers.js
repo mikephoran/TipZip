@@ -7,6 +7,8 @@ var sequelize = require('./db').sequelize;
 var Vendor = require('./db').Vendor;
 var User = require('./db').User;
 var Rating = require('./db').Rating;
+var Vendor = require('./db').Vendor;
+
 
 /**
 * Finds a user in the database based on username or email.
@@ -142,3 +144,77 @@ exports.findAll = function(callback) {
     callback(vendors)
   });
 };
+
+
+var addUser = function(username, password, email, latitude, longitude, zipcode, age, displayname, firstname, middlename, lastname) {
+  //username, password and e-mail are required arguments
+
+  User.create({
+    username: username,
+    password: password,
+    email: email,
+    latitude: latitude || null,
+    longitude: longitude || null,
+    zipcode: zipcode || null,
+    age: age || null,
+    displayname: displayname || null,
+    firstname: firstname || null,
+    middlename: middlename || null,
+    lastname: lastname || null
+  }).success(function(user) {
+    if (latitude && longitude) {
+      var qstring = 'UPDATE "Users" ' + "SET geoloc=ST_GeogFromText('SRID=4326;POINT("+ longitude + " " + latitude + ")') WHERE id="+user.dataValues.id;
+      sequelize.query(qstring);
+    }
+  });
+}
+
+var addVendor = function(UserId, latitude, longitude, totaltip, image, description, status) {
+  //UserId, Latitude and Longitude are required
+
+  Vendor.create({
+    UserId: UserId,
+    latitude: latitude,
+    longitude: longitude,
+    image: image || null,
+    description: description || null,
+    status: status || false,
+    totaltip: totaltip || null
+  }).success(function(vendor) {
+    if (latitude && longitude) {
+      var qstring = 'UPDATE "Vendors" ' + "SET geoloc=ST_GeogFromText('SRID=4326;POINT("+ longitude + " " + latitude + ")') WHERE id="+vendor.dataValues.id;
+      sequelize.query(qstring);
+    }
+  });
+}
+
+var vendorsWithinMiles = function(UserId, VendorId, miles) {
+  var radius = miles*1.6*1000;
+  User.find({
+    attributes: 'geoloc',
+    where: {UserId: UserId}
+  }).success(function(UserGeo) {
+    console.log(UserGeo);
+    sequelize.query('SELECT geoloc FROM "Vendors" WHERE ST_DWithin(geoloc, ' + UserGeo + ', ' + radius + ')')
+    .success(function(nearbyVendors) {
+      console.log(nearbyVendors);
+    })
+  })
+}
+
+var calcDistance = function(UserId, VendorId) {
+  User.find({
+    attributes: 'geoloc',
+    where: {UserId: UserId}
+  }).success(function(UserGeo) {
+    User.find({
+      attributes: 'geoloc',
+      where: {VendorId: VendorId}
+    }).success(function(VendorGeo) {
+      sequelize.query('SELECT ST_Distance(gg1, gg2) As spheroid_dist FROM (SELECT ' + UserGeo + ' As gg1, ' + VendorGeo + ' As gg2) As foo')
+      .success(function(distance) {
+        console.log(distance);
+      })
+    })
+  })
+}

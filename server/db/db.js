@@ -65,7 +65,10 @@ var User = exports.User = sequelize.define('User', {
   firstname: Sequelize.STRING,
   middlename: Sequelize.STRING,
   lastname: Sequelize.STRING
-});
+})
+
+setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Users" ADD COLUMN geoloc geography(Point,4326)'), 2000);
+
 
 // Vendor Model
 var Vendor = exports.Vendor = sequelize.define('Vendor', {
@@ -89,6 +92,8 @@ Vendor.belongsTo(User);
 
 User.hasMany(Vendor);
 Vendor.hasMany(User);
+
+setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Vendors" ADD COLUMN geoloc geography(Point,4326)'), 2000);
 
 //Credit Card Model
 var CreditCard = exports.Tip = sequelize.define('Tip', {
@@ -175,7 +180,7 @@ var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
 .complete(function(err) {
    if (err) {
      console.log('An error occurred while creating the table:', err);
