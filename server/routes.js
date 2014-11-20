@@ -25,6 +25,7 @@ exports.api = function(app) {
   app.post('/vendor/photo', authenticate, upload, api.uploadPhoto)
   app.post('/vendor/add', authenticate, api.addVendor);
   app.post('/vendor/update', authenticate, api.updateVendor);
+  app.post('/vendor/rate', authenticate, api.addRating);
   app.get('/vendor/status', authenticate, api.getStatus);
   app.get('/vendor/get', authenticate, api.getAll);
   // app.get('/vendor/trending', authenticate);
@@ -36,6 +37,7 @@ exports.api = function(app) {
   // app.post('/vendor/photo', upload, api.uploadPhoto)
   // app.post('/vendor/add', api.addVendor);
   // app.post('/vendor/update', api.updateVendor);
+  // app.post('/vendor/rate', api.addRating);
   // app.get('/vendor/status', api.getStatus);
   // app.get('/vendor/get', api.getAll);
   // // app.get('/vendor/trending');

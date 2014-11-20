@@ -6,6 +6,7 @@
 var sequelize = require('./db').sequelize;
 var Vendor = require('./db').Vendor;
 var User = require('./db').User;
+var Rating = require('./db').Rating;
 
 /**
 * Finds a user in the database based on username or email.
@@ -105,6 +106,7 @@ exports.findOne = function(user, callback) {
 * @instance
 * @param {function} callback Function to be executed on results of the query. 
 */
+
 exports.findAll = function(callback) {
   Vendor.findAll({
     attributes: [
@@ -115,33 +117,28 @@ exports.findAll = function(callback) {
       'longitude',
       'createdAt'
     ],
-    include: {
-      model: User,
-      attributes: [
-        'username',
-        'displayname',
-      ]
-    }
-  }).then(callback);
+    include: [
+      {
+        model: User,
+        attributes: [
+          'username',
+          'displayname',
+        ]
+      },
+      Rating
+    ]
+  }).then(function(vendors) {
+    vendors = vendors.map(function(val, index) {
+      val.dataValues.avgrating = val.Ratings.reduce(function(mem, val, i, col) {
+        mem += val.rating;
+        if (i === col.length -1) {
+          mem /= col.length;
+        }
+        return mem;
+      }, 0);
+      console.log('VAL', val);
+      return val;
+    });
+    callback(vendors)
+  });
 };
-
-// exports.findAll = function(callback) {
-//   User.findAll({
-//     attributes: [
-//       'username',
-//       'displayname'
-//     ],
-//     include: {
-//       model: Vendor, 
-//       as: 'User',
-//       attributes: [
-//         'image',
-//         'description',
-//         'status',
-//         'latitude',
-//         'longitude',
-//         'createdAt'
-//       ]
-//     }
-//   }).then(callback);
-// };

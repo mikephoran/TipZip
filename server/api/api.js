@@ -5,6 +5,7 @@
 */
 var helpers = require('../db/helpers');
 var Vendor = require('../db/db').Vendor;
+var Rating = require('../db/db').Rating;
 var multipart = require('connect-multiparty');
 var _ = require('lodash');
 
@@ -221,6 +222,29 @@ exports.updateUser = function(req, res) {
       res.json({
         success: true,
         result: user
+      });
+    });
+  });
+};
+
+
+exports.addRating = function(req, res) {
+  helpers.getPersonal({username: req.user}, function(user) {
+    helpers.findVendor({username:req.body.vendor}, function(vendor) {
+      Rating.build({
+        rating: req.body.rating,
+        review: req.body.review,
+        VendorId: vendor.id,
+        UserId: user.id
+      })
+      .save()
+      .complete(function(err) {
+        if (err) {
+          console.log('Rating Save Error:', err);
+          res.json({success: false, result: 'Rating Save unsuccessful.'});
+          return;
+        }
+        res.json({success: true, result: 'Vendor Save Successful'});
       });
     });
   });
