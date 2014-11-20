@@ -36,7 +36,7 @@ exports.logout = function(req, res, next) {
 * @param {string} user.password Password from user object profile.
 * @param {string} password Password to test against provided by user.
 */
-var checkPassword = function(user, password) {
+var checkPassword = exports.checkPassword = function(user, password) {
   return new BPromise(function(resolve) {
     bcrypt.compare(password, user.password, function(err, result) {
       if (err) {
