@@ -5,7 +5,7 @@ var sequelize = require('./db').sequelize;
 
 var rec = null;
 
-var findRecommendation = exports.findRecommendation = function(requestedUser) {
+var findRecommendation = exports.findRecommendation = function(requestedUser, callback) {
 
   var closestUser = null;
 
@@ -73,6 +73,9 @@ var findRecommendation = exports.findRecommendation = function(requestedUser) {
           rec = null;
         }
         console.log('\n RECOMMENDED VENDORS: ', rec, '\n');
+        if (callback) {
+          callback(rec);
+        }
       })
     })
   })
