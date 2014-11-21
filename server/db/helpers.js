@@ -145,60 +145,14 @@ exports.findAll = function(callback) {
   });
 };
 
-
-var addUser = function(username, password, email, latitude, longitude, zipcode, age, displayname, firstname, middlename, lastname) {
-  //username, password and e-mail are required arguments
-  var newUser = {
-    username: username,
-    password: password,
-    email: email,
-    latitude: latitude || null,
-    longitude: longitude || null,
-    zipcode: zipcode || null,
-    age: age || null,
-    displayname: displayname || null,
-    firstname: firstname || null,
-    middlename: middlename || null,
-    lastname: lastname || null
-  };
-
-  User.create(newUser).success(function(user) {
-    if (latitude && longitude) {
-      var qstring = 'UPDATE "Users" ' + "SET geoloc=ST_GeographyFromText('POINT(" + longitude + " " + latitude + ")') WHERE id=" + user.dataValues.id;
-      sequelize.query(qstring);
-    }
-  });
-};
-
-var addVendor = function(UserId, latitude, longitude, totaltip, image, description, status) {
-  //UserId, Latitude and Longitude are required
-  var newVendor = {
-    UserId: UserId,
-    latitude: latitude,
-    longitude: longitude,
-    image: image || null,
-    description: description || null,
-    status: status || false,
-    totaltip: totaltip || null
-  };
-
-  Vendor.create(newVendor).success(function(vendor) {
-    if (latitude && longitude) {
-      var qstring = 'UPDATE "Vendors" ' + "SET geoloc=ST_GeographyFromText('POINT(" + longitude + " " + latitude + ")') WHERE id=" + vendor.dataValues.id;
-      sequelize.query(qstring);
-    }
-  });
-};
-
 //Return all Vendors within X miles of User.  Applies callback to an array of VendorIds. 
 var vendorsNearUsers = function(UserId, miles, callback) {
   //translate miles to meters
   var radius = miles*1.6*1000;
-
-  sequelize.query('SELECT geoloc FROM "Users" WHERE id=' + UserId)
+  sequelize.query("SELECT ST_GeographyFromText('POINT(' || longitude || ' ' || latitude ||')')" + ' FROM "Users" WHERE id=' + UserId)
   .success(function(UserGeo) {
-    var UserGeo = UserGeo[0].geoloc;
-    sequelize.query('SELECT id FROM "Vendors" WHERE ST_DWithin(geoloc, ' + "'" + UserGeo + "'" + ', ' + radius + ')')
+    var UserGeo = UserGeo[0].st_geographyfromtext;
+    sequelize.query('SELECT id FROM "Vendors" WHERE ' + "ST_DWithin(ST_GeographyFromText('POINT(' || longitude || ' ' || latitude ||')'), " + "'" + UserGeo + "'" + ', ' + radius + ')')
     .success(function(VendorIds) {
       var nearbyVendors = [];
       for (var i=0; i < VendorIds.length; i++) {
@@ -227,10 +181,47 @@ var calcDistance = function(UserId, VendorId, callback) {
 }
 
 
+
+
+
+var addUser = function(username, password, email, latitude, longitude, zipcode, age, displayname, firstname, middlename, lastname) {
+  //username, password and e-mail are required arguments
+  var newUser = {
+    username: username,
+    password: password,
+    email: email,
+    latitude: latitude || null,
+    longitude: longitude || null,
+    zipcode: zipcode || null,
+    age: age || null,
+    displayname: displayname || null,
+    firstname: firstname || null,
+    middlename: middlename || null,
+    lastname: lastname || null
+  };
+
+  User.create(newUser);
+};
+
+
+var addVendor = function(UserId, latitude, longitude, totaltip, image, description, status) {
+  //UserId, Latitude and Longitude are required
+  var newVendor = {
+    UserId: UserId,
+    latitude: latitude,
+    longitude: longitude,
+    image: image || null,
+    description: description || null,
+    status: status || false,
+    totaltip: totaltip || null
+  };
+
+  Vendor.create(newVendor);
+};
+
 //Seed Data for Testing PostGIS Functions
 // setTimeout(addUser.bind(this, 'test', 'test', 'test', 43.645016, -79.39092), 5000);
 // setTimeout(addUser.bind(this, 'test', 'test', 'test', 43.666503, -79.381121), 5000);
 // setTimeout(addVendor.bind(this, 2, 43.666503, -79.381121), 10000);
-// setTimeout(calcDistance.bind(this, 1, 1), 15000);
-// setTimeout(vendorsNearUsers.bind(this,1,2), 15000);
-
+// // setTimeout(calcDistance.bind(this, 1, 1), 15000);
+// setTimeout(vendorsNearUsers.bind(this,2,2), 15000);
