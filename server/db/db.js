@@ -64,10 +64,10 @@ var User = exports.User = sequelize.define('User', {
   displayname: Sequelize.STRING,
   firstname: Sequelize.STRING,
   middlename: Sequelize.STRING,
-  lastname: Sequelize.STRING
+  lastname: Sequelize.STRING,
+  stripe: Sequelize.STRING
 })
 
-// Deprecated Because No Need For GEOLOC Column
 // setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Users" ADD COLUMN geoloc geography(Point,4326)'), 2000);
 
 
@@ -94,7 +94,6 @@ Vendor.belongsTo(User);
 User.hasMany(Vendor);
 Vendor.hasMany(User);
 
-// Deprecated Because No Need for GEOLOC Column
 // setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Vendors" ADD COLUMN geoloc geography(Point,4326)'), 2000);
 
 //Credit Card Model
