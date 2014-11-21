@@ -10,7 +10,11 @@ var BPromise = require('bluebird');
 
 
 exports.isVendor = function(req, res, next) {
-  var user = { username: req.body.username };
+  if (!req.user) {
+    next();
+    return;
+  }
+  var user = { username: req.user };
   helpers.findVendor(user, function(vendor) {
     if (vendor) {
       req.isVendor = true;
