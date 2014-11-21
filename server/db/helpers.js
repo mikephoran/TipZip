@@ -214,25 +214,17 @@ var vendorsNearUsers = function(UserId, miles, callback) {
 
 //Calculate Distance between User and Vendor. Applies callback to distance (in miles).
 var calcDistance = function(UserId, VendorId, callback) {
-  sequelize.query('SELECT geoloc FROM "Users" WHERE id=' + UserId)
-  .success(function(UserGeo) {
-    var UserGeo = UserGeo[0].geoloc;
-    sequelize.query('SELECT geoloc FROM "Vendors" WHERE id=' + VendorId)
-    .success(function(VendorGeo) {
-       var VendorGeo = VendorGeo[0].geoloc;
-      sequelize.query("SELECT ST_Distance('" + UserGeo + "', '" + VendorGeo + "')")
-      //sequelize.query("SELECT ST_Distance(ST_GeographyFromText('POINT(" + '(SELECT longitude FROM "Users" WHERE id='+UserId+") 43.645016)'), ST_GeographyFromText('POINT(2.5559 49.0083)'))")
-      .success(function(distance) {
-        console.log('User distance from Vendor in Meters: ', distance[0].st_distance)
-        var distance = Number(distance[0].st_distance) * 0.00062137;
-        console.log('User distance from Vendor in Miles: ', distance);
-        if (callback) {
-          callback(distance);
-        }
-      });
-    });
-  });
-};
+  var qstring = 'WITH userlon AS (SELECT longitude FROM "Users" WHERE id='+UserId+'), userlat AS (SELECT latitude FROM "Users" WHERE id='+UserId+'), vendorlon AS (SELECT longitude FROM "Vendors" WHERE id='+VendorId+'), vendorlat AS (SELECT latitude FROM "Vendors" WHERE id='+VendorId+') SELECT ST_Distance(ST_GeographyFromText(' + "'POINT(' || userlon.longitude || ' ' || userlat.latitude ||')'), ST_GeographyFromText('POINT(' || vendorlon.longitude || ' ' || vendorlat.latitude ||')')) FROM userlon, userlat, vendorlon, vendorlat";
+  sequelize.query(qstring)
+  .success(function(distance) {
+    console.log('User distance from Vendor in Meters: ', distance[0].st_distance)
+    var distance = Number(distance[0].st_distance) * 0.00062137;
+    console.log('User distance from Vendor in Miles: ', distance);
+    if (callback) {
+      callback(distance);
+    }
+  })
+}
 
 
 //Seed Data for Testing PostGIS Functions
