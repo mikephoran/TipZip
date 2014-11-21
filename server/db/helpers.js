@@ -133,7 +133,7 @@ exports.findAll = function(callback) {
     vendors = vendors.map(function(val, index) {
       val.dataValues.avgrating = val.Ratings.reduce(function(mem, val, i, col) {
         mem += val.rating;
-        if (i === col.length -1) {
+        if (i === col.length - 1) {
           mem /= col.length;
         }
         return mem;
@@ -148,8 +148,7 @@ exports.findAll = function(callback) {
 
 var addUser = function(username, password, email, latitude, longitude, zipcode, age, displayname, firstname, middlename, lastname) {
   //username, password and e-mail are required arguments
-
-  User.create({
+  var newUser = {
     username: username,
     password: password,
     email: email,
@@ -161,18 +160,19 @@ var addUser = function(username, password, email, latitude, longitude, zipcode, 
     firstname: firstname || null,
     middlename: middlename || null,
     lastname: lastname || null
-  }).success(function(user) {
+  };
+
+  User.create(newUser).success(function(user) {
     if (latitude && longitude) {
-      var qstring = 'UPDATE "Users" ' + "SET geoloc=ST_GeographyFromText('POINT("+ longitude + " " + latitude + ")') WHERE id="+user.dataValues.id;
+      var qstring = 'UPDATE "Users" ' + "SET geoloc=ST_GeographyFromText('POINT(" + longitude + " " + latitude + ")') WHERE id=" + user.dataValues.id;
       sequelize.query(qstring);
     }
   });
-}
+};
 
 var addVendor = function(UserId, latitude, longitude, totaltip, image, description, status) {
   //UserId, Latitude and Longitude are required
-
-  Vendor.create({
+  var newVendor = {
     UserId: UserId,
     latitude: latitude,
     longitude: longitude,
@@ -180,45 +180,47 @@ var addVendor = function(UserId, latitude, longitude, totaltip, image, descripti
     description: description || null,
     status: status || false,
     totaltip: totaltip || null
-  }).success(function(vendor) {
+  };
+
+  Vendor.create(newVendor).success(function(vendor) {
     if (latitude && longitude) {
-      var qstring = 'UPDATE "Vendors" ' + "SET geoloc=ST_GeographyFromText('POINT("+ longitude + " " + latitude + ")') WHERE id="+vendor.dataValues.id;
+      var qstring = 'UPDATE "Vendors" ' + "SET geoloc=ST_GeographyFromText('POINT(" + longitude + " " + latitude + ")') WHERE id=" + vendor.dataValues.id;
       sequelize.query(qstring);
     }
   });
-}
+};
 
 //Return all Vendors within X miles of User.  Applies callback to an array of VendorIds. 
 var vendorsNearUsers = function(UserId, miles, callback) {
   //translate miles to meters
   var radius = miles*1.6*1000;
 
-  sequelize.query('SELECT geoloc FROM "Users" WHERE id='+UserId)
+  sequelize.query('SELECT geoloc FROM "Users" WHERE id=' + UserId)
   .success(function(UserGeo) {
     var UserGeo = UserGeo[0].geoloc;
     sequelize.query('SELECT id FROM "Vendors" WHERE ST_DWithin(geoloc, ' + "'" + UserGeo + "'" + ', ' + radius + ')')
     .success(function(VendorIds) {
       var nearbyVendors = [];
-      for (var i=0; i<VendorIds.length; i++) {
+      for (var i=0; i < VendorIds.length; i++) {
         nearbyVendors.push(VendorIds[i].id);
       }
       console.log('Nearby Vendors: ', nearbyVendors);
       if (callback) {
         callback(nearbyVendors);
       }
-    })
-  })
-}
+    });
+  });
+};
 
 //Calculate Distance between User and Vendor. Applies callback to distance (in miles).
 var calcDistance = function(UserId, VendorId, callback) {
-  sequelize.query('SELECT geoloc FROM "Users" WHERE id='+UserId)
+  sequelize.query('SELECT geoloc FROM "Users" WHERE id=' + UserId)
   .success(function(UserGeo) {
     var UserGeo = UserGeo[0].geoloc;
-    sequelize.query('SELECT geoloc FROM "Vendors" WHERE id='+VendorId)
+    sequelize.query('SELECT geoloc FROM "Vendors" WHERE id=' + VendorId)
     .success(function(VendorGeo) {
        var VendorGeo = VendorGeo[0].geoloc;
-      sequelize.query("SELECT ST_Distance('"+UserGeo+"', '"+VendorGeo+"')")
+      sequelize.query("SELECT ST_Distance('" + UserGeo + "', '" + VendorGeo + "')")
       //sequelize.query("SELECT ST_Distance(ST_GeographyFromText('POINT(" + '(SELECT longitude FROM "Users" WHERE id='+UserId+") 43.645016)'), ST_GeographyFromText('POINT(2.5559 49.0083)'))")
       .success(function(distance) {
         console.log('User distance from Vendor in Meters: ', distance[0].st_distance)
@@ -227,10 +229,10 @@ var calcDistance = function(UserId, VendorId, callback) {
         if (callback) {
           callback(distance);
         }
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
 
 
 //Seed Data for Testing PostGIS Functions
