@@ -93,14 +93,13 @@ exports.addVendor = function(req, res) {
 */
 exports.getStatus = function(req, res) {
   var user = {
-    username: req.body.vendor || req.user,
-    email: req.body.vendor || req.user
+    username: req.params.vendor || req.user
   };
-  helpers.findOne(user, function(vendor) {
+  helpers.findOne(user, function(user) {
     res.json({
       success: true, 
       result: {
-        isOnline: vendor.status
+        isOnline: user.Vendor.status
       }
     });
   });
@@ -175,7 +174,8 @@ exports.getPersonal = function(req, res) {
 
 exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
-    'description'
+    'description',
+    'status'
   ]);
   var vendor = {
     username: req.user, //|| 'ravendano',
