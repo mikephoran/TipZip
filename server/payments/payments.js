@@ -6,31 +6,30 @@ var Tip = require('../db/db').Tip;
 
 exports.saveCard = function(req, res) {
   var token = req.body.token;
-  getOrCreateCustomer(req.user).then(function(stripeCustId) {
-    saveCard(stripeCustId, token).then(function(err, card) {
-      if (err) {
-        console.log('Save Card Error:', err);
-        res.json({success: false, result: 'Save Card Failure'});
-        return;
-      }
-
+  getOrCreateCustomer(req.user)
+  .then(function(stripeCustId) {
+    console.log('HELLLLO3\n\n\n', stripeCustId);
+    saveCard(stripeCustId, token).then(function(card) {
       console.log('Save Card Success:', card);
       res.json({success: true, result: 'Save Card Success!'});
     });
+  })
+  .catch(function(err) {
+    console.log('Save Card Error:', err);
+    res.json({success: false, result: 'Save Card Failure'});
   });
 };
 
 exports.getCards = function(req, res) {
   getOrCreateCustomer(req.user).then(function(stripeCustId) {
-    getCards(stripeCustId).then(function(err, cards) {
-      if (err) {
-        console.log('Get Card Error:', err);
-        res.json({success: false, result: 'Get Card Failure'});
-        return;
-      }
-
+    getCards(stripeCustId)
+    .then(function(cards) {
       console.log('Get Card Success:', cards);
       res.json({success: true, data: cards, result: 'Get Card Success!'});
+    })
+    .catch(function(err) {
+      console.log('Get Card Error:', err);
+      res.json({success: false, result: 'Get Card Failure'});
     });
   });
 };
@@ -56,10 +55,12 @@ exports.sendTip = function(req, res) {
     });
   });
 };
+
 var getOrCreateCustomer = function(user) {
-  return BPromise(function(resolve) {
-    helpers.getPersonal(user, function(user) {
+  return new BPromise(function(resolve) {
+    helpers.getPersonal({username: user}, function(user) {
       if (user.stripe) {
+        console.log('HELLLLO\n\n\n');
         resolve(user.stripe);
         return;
       }
@@ -69,6 +70,7 @@ var getOrCreateCustomer = function(user) {
       };
       stripe.customers.create(cust, function(err, customer) {
         user.updateAttributes({stripe: customer.id}).success(function() {
+          console.log('HELLLLO2\n\n\n');
           resolve(customer.id);
         });
       });
@@ -77,19 +79,24 @@ var getOrCreateCustomer = function(user) {
 };
 
 var saveCard = function(stripeCustId, cardToken) {
-  return BPromise(function(resolve) {
-    stripe.customers.createCard(stripeCustId, {
-      card: cardToken
-    })
-    .then(resolve);
+  return new BPromise(function(resolve, reject) {
+    stripe.customers.createCard(stripeCustId, {card: cardToken}, function(err, card) {
+      console.log('attempted card:', err, card);
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(card);
+    });
   });
 };
 
 var getCards = function(stripeCustId) {
-  return BPromise(function(resolve) {
+  return new BPromise(function(resolve, reject) {
     stripe.customers.listCards(stripeCustId, function(err, cards) {
       if (err) {
-        resolve(err, null);
+        reject(err);
+        return;
       }
       var credit_cards = cards.map(function(card) {
         return _.pick(card, [
@@ -98,13 +105,13 @@ var getCards = function(stripeCustId) {
           'last4'
         ]);
       });
-      resolve(null, credit_cards);
+      resolve(credit_cards);
     });
   });
 };
 
 var chargeCard = function(details) {
-  return BPromise(function(resolve) {
+  return new BPromise(function(resolve, reject) {
     var payment = {
       amount: details.amount,
       currency: details.currency,
@@ -114,11 +121,11 @@ var chargeCard = function(details) {
     stripe.charges.create(payment, function(err, charge) {
       if (err) {
         console.log('Payment Error:', err);
-        resolve(err, null);
+        reject(err);
         return;
       }
       console.log('Payment Success!:', charge);
-      resolve(null, charge);
+      resolve(charge);
     });
   });
 };
