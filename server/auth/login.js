@@ -14,7 +14,9 @@ exports.isVendor = function(req, res, next) {
   helpers.findVendor(user, function(vendor) {
     if (vendor) {
       req.isVendor = true;
+      req.isOnline = vendor.get('status');
       next();
+
       return;
     }
     req.isVendor = false;

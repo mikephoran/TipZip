@@ -26,10 +26,10 @@ exports.api = function(app) {
   app.post('/vendor/add', authenticate, api.addVendor);
   app.post('/vendor/update', authenticate, api.updateVendor);
   app.post('/vendor/rate', authenticate, api.addRating);
-  app.get('/vendor/status', authenticate, api.getStatus);
   app.get('/vendor/get', authenticate, api.getAll);
   // app.get('/vendor/trending', authenticate);
   app.get('/vendor/:vendor', authenticate, api.getOne);
+  app.get('/vendor/:vendor/status', authenticate, api.getStatus);
 
   app.post('/user/update', authenticate, api.updateUser);
   app.get('/user/personal', authenticate, api.getPersonal);
@@ -38,10 +38,10 @@ exports.api = function(app) {
   // app.post('/vendor/add', api.addVendor);
   // app.post('/vendor/update', api.updateVendor);
   // app.post('/vendor/rate', api.addRating);
-  // app.get('/vendor/status', api.getStatus);
   // app.get('/vendor/get', api.getAll);
   // // app.get('/vendor/trending');
   // app.get('/vendor/:vendor', api.getOne);
+  // app.get('/vendor/:vendor/status', api.getStatus);
 
   // app.post('/user/update', api.updateUser);
   // app.get('/user/personal', api.getPersonal);
@@ -51,7 +51,7 @@ exports.api = function(app) {
 exports.auth = function(app) {
   app.post('/login', auth.isVendor, auth.login, function(req, res) {
     console.log('Logged In:', req.user, req.session, 'type:', req.isVendor);
-    res.json({user: req.user, isVendor: req.isVendor});
+    res.json({user: req.user, isVendor: req.isVendor, isOnline: req.isOnline});
   });
   app.post('/logout', auth.logout, function(req, res) {
     console.log('Logged Out:', req.user, req.session);
