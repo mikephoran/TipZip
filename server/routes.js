@@ -49,7 +49,11 @@ exports.api = function(app) {
 
 /* ======= ROUTER: '/auth' ======= */
 exports.auth = function(app) {
-  app.post('/login', auth.isVendor, auth.login, function(req, res) {
+  app.post('/login', auth.login, auth.isVendor, function(req, res) {
+    if (!req.user) { 
+      res.json({user: null}); 
+      return; 
+    }
     console.log('Logged In:', req.user, req.session, 'type:', req.isVendor);
     res.json({user: req.user, isVendor: req.isVendor, isOnline: req.isOnline});
   });
@@ -75,5 +79,6 @@ exports.management = function(app) {
 };
 
 exports.payments = function(app) {
-  app.post('/save', authenticate, payments.save);
-}
+  app.post('/save', authenticate, payments.saveCard);
+  app.post('/listcards', authenticate, payments.getCards);
+};
