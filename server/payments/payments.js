@@ -8,7 +8,6 @@ exports.saveCard = function(req, res) {
   var token = req.body.token;
   getOrCreateCustomer(req.user)
   .then(function(stripeCustId) {
-    console.log('HELLLLO3\n\n\n', stripeCustId);
     saveCard(stripeCustId, token).then(function(card) {
       console.log('Save Card Success:', card);
       res.json({success: true, result: 'Save Card Success!'});
@@ -60,7 +59,6 @@ var getOrCreateCustomer = function(user) {
   return new BPromise(function(resolve) {
     helpers.getPersonal({username: user}, function(user) {
       if (user.stripe) {
-        console.log('HELLLLO\n\n\n');
         resolve(user.stripe);
         return;
       }
@@ -70,7 +68,6 @@ var getOrCreateCustomer = function(user) {
       };
       stripe.customers.create(cust, function(err, customer) {
         user.updateAttributes({stripe: customer.id}).success(function() {
-          console.log('HELLLLO2\n\n\n');
           resolve(customer.id);
         });
       });
@@ -81,7 +78,6 @@ var getOrCreateCustomer = function(user) {
 var saveCard = function(stripeCustId, cardToken) {
   return new BPromise(function(resolve, reject) {
     stripe.customers.createCard(stripeCustId, {card: cardToken}, function(err, card) {
-      console.log('attempted card:', err, card);
       if (err) {
         reject(err);
         return;
