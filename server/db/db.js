@@ -65,7 +65,8 @@ var User = exports.User = sequelize.define('User', {
   firstname: Sequelize.STRING,
   middlename: Sequelize.STRING,
   lastname: Sequelize.STRING,
-  stripe: Sequelize.STRING
+  stripe: Sequelize.STRING,
+  defaultcard: Sequelize.STRING
 })
 
 // setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Users" ADD COLUMN geoloc geography(Point,4326)'), 2000);

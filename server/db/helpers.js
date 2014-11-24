@@ -68,6 +68,12 @@ exports.findVendor = function(vendor, callback) {
   });
 };
 
+exports.getDefaultCard = function(stripe, callback) {
+  User.find({
+    where: {stripe: stripe},
+    attributes: ['defaultcard']
+  }).then(callback);
+};
 /**
 * Finds a vendor in the database based on username or email and returns public data.
 * @function findOne

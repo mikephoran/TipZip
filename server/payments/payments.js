@@ -10,7 +10,22 @@ exports.saveCard = function(req, res) {
   .then(function(stripeCustId) {
     saveCard(stripeCustId, token).then(function(card) {
       console.log('Save Card Success:', card);
-      res.json({success: true, result: 'Save Card Success!'});
+      var newCard = _.pick(card, [
+        'id',
+        'brand',
+        'last4'
+      ]);
+      helpers.getDefaultCard(stripeCustId, function(user) {
+        if (!user.defaultcard) {
+          setDefault(req.user, newCard.id)
+          .then(function() {
+            newCard.defaultcard = true;
+            res.json({success: true, result: 'Save Card Success!', data: newCard});
+          });
+          return;
+        }
+        res.json({success: true, result: 'Save Card Success!', data: newCard});
+      });
     });
   })
   .catch(function(err) {
@@ -33,6 +48,23 @@ exports.getCards = function(req, res) {
   });
 };
 
+exports.setDefault = function(req, res) {
+  var newDefault = req.body.newDefaultCard;
+  helpers.getPersonal({username: req.user}, function(user) {
+    getCards(user.stripe).then(function(cards) {
+      var isValid = _.some(cards, function(val) {
+        return val.id === newDefault;
+      });
+      if (isValid) {
+        setDefault(req.user, newDefault).then(function() {
+          res.json({success: true, result: 'New Default Selected', defaultCard: newDefault});
+        });
+        return;
+      }
+      res.json({success: false, result: 'Default Unchanged'});
+    });
+  });
+};
 exports.sendTip = function(req, res) {
   var details = _.pick(req.body, [
     'amount',
@@ -94,14 +126,28 @@ var getCards = function(stripeCustId) {
         reject(err);
         return;
       }
-      var credit_cards = cards.map(function(card) {
-        return _.pick(card, [
-          'id',
-          'brand',
-          'last4'
-        ]);
+      helpers.getDefaultCard(stripeCustId, function(user) {
+        var credit_cards = cards.data.map(function(val) {
+          var card = _.pick(val, [
+            'id',
+            'brand',
+            'last4'
+          ]);
+          card.defaultcard = card.id === user.defaultcard;
+          return card;
+        });
+        resolve(credit_cards);
       });
-      resolve(credit_cards);
+    });
+  });
+};
+
+var setDefault = function(user, cardId) {
+  return new BPromise(function(resolve) {
+    helpers.getPersonal({username: user}, function(user) {
+      user.updateAttributes({defaultcard: cardId}).success(function() {
+        resolve(true);
+      });
     });
   });
 };
