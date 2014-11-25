@@ -64,6 +64,7 @@ exports.findVendor = function(vendor, callback) {
   exports.findUser(user, function(user) {
     Vendor.find({
       where: { UserId: user.id },
+      include: User
     }).then(callback);
   });
 };

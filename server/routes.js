@@ -81,4 +81,6 @@ exports.management = function(app) {
 exports.payments = function(app) {
   app.post('/save', authenticate, payments.saveCard);
   app.post('/listcards', authenticate, payments.getCards);
+  app.post('/setdefault', authenticate, payments.setDefault);
+  app.post('/tip', authenticate, payments.sendTip);
 };
