@@ -34,6 +34,8 @@ exports.api = function(app) {
   app.post('/user/update', authenticate, api.updateUser);
   app.get('/user/personal', authenticate, api.getPersonal);
 
+  app.get('/peds', authenticate, api.getAllPeds);
+
   // app.post('/vendor/photo', upload, api.uploadPhoto)
   // app.post('/vendor/add', api.addVendor);
   // app.post('/vendor/update', api.updateVendor);
