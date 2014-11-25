@@ -249,3 +249,11 @@ exports.addRating = function(req, res) {
     });
   });
 };
+
+exports.getAllPeds = function(req, res) {
+  helpers.getAllPeds(function(results) {
+    res.json({success:true, result: results});
+    console.log('GET ALL PEDS IS WORKING !!!!!!!!!!!!!!!!!!');
+    return;
+  })
+};

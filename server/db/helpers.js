@@ -8,6 +8,7 @@ var Vendor = require('./db').Vendor;
 var User = require('./db').User;
 var Rating = require('./db').Rating;
 var Vendor = require('./db').Vendor;
+var Pedestrian = require('./db').Pedestrian;
 
 
 /**
@@ -219,6 +220,13 @@ var addVendor = function(UserId, latitude, longitude, totaltip, image, descripti
 
   Vendor.create(newVendor);
 };
+
+exports.getAllPeds = function(callback) {
+  Pedestrian.findAll()
+  .success(function(result) {
+    callback(result);
+  })
+}
 
 //Seed Data for Testing PostGIS Functions
 // setTimeout(addUser.bind(this, 'test', 'test', 'test', 43.645016, -79.39092), 5000);
