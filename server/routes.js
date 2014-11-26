@@ -27,7 +27,6 @@ exports.api = function(app) {
   app.post('/vendor/update', authenticate, api.updateVendor);
   app.post('/vendor/rate', authenticate, api.addRating);
   app.post('/vendor/get', authenticate, api.getAll);
-  // app.get('/vendor/trending', authenticate);
   app.get('/vendor/:vendor', authenticate, api.getOne);
   app.get('/vendor/:vendor/status', authenticate, api.getStatus);
 
@@ -35,18 +34,6 @@ exports.api = function(app) {
   app.get('/user/personal', authenticate, api.getPersonal);
 
   app.get('/peds', authenticate, api.getAllPeds);
-
-  // app.post('/vendor/photo', upload, api.uploadPhoto)
-  // app.post('/vendor/add', api.addVendor);
-  // app.post('/vendor/update', api.updateVendor);
-  // app.post('/vendor/rate', api.addRating);
-  // app.get('/vendor/get', api.getAll);
-  // // app.get('/vendor/trending');
-  // app.get('/vendor/:vendor', api.getOne);
-  // app.get('/vendor/:vendor/status', api.getStatus);
-
-  // app.post('/user/update', api.updateUser);
-  // app.get('/user/personal', api.getPersonal);
 };
 
 /* ======= ROUTER: '/auth' ======= */
