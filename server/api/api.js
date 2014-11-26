@@ -52,14 +52,13 @@ exports.uploadPhoto = function (req, res) {
 * @param {object} res Response Object
 */
 exports.addVendor = function(req, res) {
-  // helpers.findUser({username: 'ravendano'}, function(user) {
-  console.log(req.body);
+  console.log('req body', req.body);
   helpers.findUser({username: req.user}, function(user) {
     Vendor.build({
-      // image: '',
       description: req.body.description,
       status: false,
-      UserId: user.id
+      UserId: user.id,
+      type: req.body.type
     })
     .save()
     .complete(function(err) {
@@ -175,7 +174,8 @@ exports.getPersonal = function(req, res) {
 exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
-    'status'
+    'status',
+    'type'
   ]);
   var vendor = {
     username: req.user, //|| 'ravendano',
