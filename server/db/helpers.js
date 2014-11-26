@@ -97,7 +97,8 @@ exports.findOne = function(user, callback) {
         'status',
         'latitude',
         'longitude',
-        'createdAt'
+        'createdAt',
+        'type'
       ]
     }
   }).then(callback);
@@ -119,7 +120,8 @@ exports.findAll = function(callback) {
       'status',
       'latitude',
       'longitude',
-      'createdAt'
+      'createdAt',
+      'type'
     ],
     include: [
       {
