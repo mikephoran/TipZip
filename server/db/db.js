@@ -1,15 +1,17 @@
-/*jslint node: true */
+/*
+* jslint node: true 
+*/
 var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
-//UNCOMMENT TO LINE 19 FOR HEROKU PRODUCTION PG DATABASE
+// UNCOMMENT TO LINE 19 FOR HEROKU PRODUCTION PG DATABASE
 // if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
 //   var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }  else {
 //   var match = 'postgres://clqelihiewknzx:mPAumcBI-kQepasSXF-VkWcoQn@ec2-54-243-51-102.compute-1.amazonaws.com:5432/d1o7guvu2hnr2n'.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }
 
-// var sequelize = exports.sequelize = new Sequelize(match[5], match[1], match[2], {
+// var sequelize = new Sequelize(match[5], match[1], match[2], {
 //   dialect: 'postgres',
 //   protocol: 'postgres',
 //   port: match[4],
@@ -18,7 +20,7 @@ var config = require('../config/config.js');
 //   native: true
 // });
 
-//UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
+// UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
 var isNative = false;
 var connectionString = config.dialect + '://' 
                      + config.username + ':' 
@@ -26,21 +28,21 @@ var connectionString = config.dialect + '://'
                      + '@' + config.host + ':5432/' 
                      + config.database;
 
-if(process.env.NODE_ENV){
+if (process.env.NODE_ENV) {
   connection_string = process.env.DATABASE_URL;
   isNative = true;
 }
 
-var sequelize = exports.sequelize = new Sequelize(connectionString, {
+var sequelize = new Sequelize(connectionString, {
   logging: console.log,
   logging: true,
   protocol: 'postgres',
   native: isNative
 });
 
-
-//Define Models
-//Sequelize automatically adds columns 'id', 'createAt', 'updatedAt'
+/*
+* ==== DB SCHEMAS ====
+*/ 
 sequelize.authenticate()
 .complete(function(err) {
   if (err) {
@@ -50,10 +52,10 @@ sequelize.authenticate()
   console.log('Connection has been established successfully.');
 });
 
-// Define Models
-// Sequelize automatically adds columns 'id', 'createAt', 'updatedAt'
-// User Model
-var User = exports.User = sequelize.define('User', {
+/*
+* ==== USER MODEL ====
+*/
+var User = sequelize.define('User', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
   email: Sequelize.STRING,
@@ -66,13 +68,12 @@ var User = exports.User = sequelize.define('User', {
   middlename: Sequelize.STRING,
   lastname: Sequelize.STRING,
   stripe: Sequelize.STRING
-})
+});
 
-// setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Users" ADD COLUMN geoloc geography(Point,4326)'), 2000);
-
-
-// Vendor Model
-var Vendor = exports.Vendor = sequelize.define('Vendor', {
+/*
+* ==== VENDOR MODEL ====
+*/
+var Vendor = sequelize.define('Vendor', {
   image: Sequelize.STRING,
   description: {
     type: Sequelize.STRING,
@@ -97,42 +98,16 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
   }
 });
 
-// User and Vendor have 1-1 Relationship
 User.hasOne(Vendor);
 Vendor.belongsTo(User);
 
 User.hasMany(Vendor);
 Vendor.hasMany(User);
 
-// setTimeout(sequelize.query.bind(sequelize,'ALTER TABLE "Vendors" ADD COLUMN geoloc geography(Point,4326)'), 2000);
-
-//Credit Card Model
-var CreditCard = exports.Tip = sequelize.define('Tip', {
-  type: Sequelize.STRING,
-  lastfour: Sequelize.INTEGER,
-  address: Sequelize.STRING,
-  state: Sequelize.STRING,
-  zip: Sequelize.STRING,
-  token: Sequelize.STRING
-});
-
-User.hasMany(CreditCard);
-CreditCard.belongsTo(User);
-
-//Bank Model
-var Bank = exports.Bank = sequelize.define('Bank', {
-  token: Sequelize.STRING,
-  lastfour: Sequelize.INTEGER,
-  address: Sequelize.STRING,
-  state: Sequelize.STRING,
-  zip: Sequelize.STRING
-})
-
-Vendor.hasMany(Bank);
-Bank.belongsTo(Vendor);
-
-// Tip Model
-var Tip = exports.Tip = sequelize.define('Tip', {
+/*
+* ==== TIP MODEL ==== 
+*/
+var Tip = sequelize.define('Tip', {
   amount: Sequelize.DECIMAL,
   latitude: Sequelize.FLOAT,
   longitude: Sequelize.FLOAT,
@@ -142,53 +117,29 @@ var Tip = exports.Tip = sequelize.define('Tip', {
   }
 });
 
-// Tip has one User and one Vendor
 User.hasMany(Tip);
 Tip.belongsTo(User);
 Vendor.hasMany(Tip);
 Tip.belongsTo(Vendor);
 
-// Rating Model
-var Rating = exports.Rating = sequelize.define('Rating', {
+/* 
+* ==== RATING MODEL ====
+*/
+var Rating = sequelize.define('Rating', {
   rating: Sequelize.INTEGER,
   review: Sequelize.TEXT
 });
 
-// Vendor has one Rating, User has many Ratings tied to Vendors
 Vendor.hasMany(Rating);
 Rating.belongsTo(Vendor);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-// Type Model - DEPRECATED
-// var Type = exports.Type = sequelize.define('Type', {
-//   type: Sequelize.STRING
-// });
 
-// // Vendors have one type, types have many vendors
-// Type.hasMany(Vendor);
-// Vendor.belongsTo(Type);
-
-// // User has many Times, Types has many Users
-// Type.hasMany(User);
-// User.hasMany(Type);
-
-
-// var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
-// // Type.hasMany(User, {through: TypesUsers});
-// // User.hasMany(Type, {through: TypesUsers});
-
-// Vendor Group Model
-var Group = exports.Group = sequelize.define('Group', {
-  groupname: Sequelize.STRING
-});
-
-// Group has multiple Vendors
-Group.hasMany(Vendor);
-Vendor.hasMany(Group);
-
-//Pedestrian Model
-var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
+/*
+* ==== PEDESTRIAN MODEL ==== 
+*/ 
+var Pedestrian = sequelize.define('pedestrianvolume',{
   mainroute: Sequelize.STRING,
   sideroute: Sequelize.STRING,
   latitude: Sequelize.FLOAT,
@@ -197,8 +148,10 @@ var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
   pedestrianvol24hr: Sequelize.STRING
 });
 
-// Synchronize the schema and create tables
-// 'force: true' removes existing tables and re-create them
+/* 
+* Synchronize the schema and create tables
+* "force: true" removes existing tables and re-create them
+*/
 sequelize.sync({ force: true })
 .complete(function(err) {
    if (err) {
@@ -208,8 +161,21 @@ sequelize.sync({ force: true })
    console.log('It worked!');
 });
 
-
-//Clean Up Ratings Table By Removing Duplicate Reviews
+/*
+* Clean Up Ratings Table By Removing Duplicate Reviews (Caused by Data Seeding)
+*/
 sequelize.query('DELETE FROM "Ratings" WHERE id NOT IN (SELECT MIN(id) FROM "Ratings" GROUP BY "UserId", "VendorId")').success(function(result) {
   console.log('Duplicate Reviews Deleted!');
 });
+
+/*
+* ==== EXPORTS ====
+*/ 
+module.exports = {
+  sequelize: sequelize,
+  User: User,
+  Vendor: Vendor, 
+  Tip: Tip,
+  Rating: Rating,
+  Pedestrian: Pedestrian
+};
