@@ -141,6 +141,16 @@ exports.getAll = function(req, res) {
     });
   });
 };
+
+exports.getAllByType = function(req, res) {
+  console.log('getAllByType', req);
+  helpers.findAll(function(vendors) {
+    res.json({
+      success: true,
+      result: vendors
+    });
+  });
+};
 /**
 * Allows currently authenticated vendor to update their vendor account information
 * @function updateVendor

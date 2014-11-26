@@ -27,6 +27,7 @@ exports.api = function(app) {
   app.post('/vendor/update', authenticate, api.updateVendor);
   app.post('/vendor/rate', authenticate, api.addRating);
   app.get('/vendor/get', authenticate, api.getAll);
+  app.get('/vendor/getbytype', authenticate, api.getAllByType;
   // app.get('/vendor/trending', authenticate);
   app.get('/vendor/:vendor', authenticate, api.getOne);
   app.get('/vendor/:vendor/status', authenticate, api.getStatus);
