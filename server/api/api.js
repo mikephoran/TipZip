@@ -58,7 +58,7 @@ exports.addVendor = function(req, res) {
       description: req.body.description,
       status: false,
       UserId: user.id,
-      type: req.body.type
+      category: req.body.category
     })
     .save()
     .complete(function(err) {
@@ -185,7 +185,7 @@ exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
     'status',
-    'type'
+    'category'
   ]);
   var vendor = {
     username: req.user, //|| 'ravendano',

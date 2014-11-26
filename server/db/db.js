@@ -83,9 +83,18 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
     defaultValue: false
   },
   totaltip: Sequelize.DECIMAL,
-  latitude: Sequelize.FLOAT,
-  longitude: Sequelize.FLOAT,
-  type: Sequelize.STRING
+  latitude: {
+    type: Sequelize.FLOAT,
+    defaultValue: 43.645016
+  },
+  longitude: {
+    type: Sequelize.FLOAT,
+    defaultValue: -79.39092
+  },
+  category: {
+    type: Sequelize.STRING,
+    defaultValue: "Food"
+  }
 });
 
 // User and Vendor have 1-1 Relationship
