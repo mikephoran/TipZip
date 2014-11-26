@@ -84,7 +84,8 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
   },
   totaltip: Sequelize.DECIMAL,
   latitude: Sequelize.FLOAT,
-  longitude: Sequelize.FLOAT
+  longitude: Sequelize.FLOAT,
+  type: Sequelize.STRING
 });
 
 // User and Vendor have 1-1 Relationship
@@ -107,7 +108,7 @@ var CreditCard = exports.Tip = sequelize.define('Tip', {
 });
 
 User.hasMany(CreditCard);
-User.belongsTo(User);
+CreditCard.belongsTo(User);
 
 //Bank Model
 var Bank = exports.Bank = sequelize.define('Bank', {
@@ -150,19 +151,23 @@ Rating.belongsTo(Vendor);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-// Type Model
-var Type = exports.Type = sequelize.define('Type', {
-  type: Sequelize.STRING
-});
+// Type Model - DEPRECATED
+// var Type = exports.Type = sequelize.define('Type', {
+//   type: Sequelize.STRING
+// });
 
-// Type is N:M with Users and with Vendors
-var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
-Type.hasMany(User, {through: TypesUsers});
-User.hasMany(Type, {through: TypesUsers});
+// // Vendors have one type, types have many vendors
+// Type.hasMany(Vendor);
+// Vendor.belongsTo(Type);
 
-var TypesVendors = exports.TypesVendors = sequelize.define('TypesVendor', {});
-Type.hasMany(Vendor, {through: TypesVendors});
-Vendor.hasMany(Type, {through: TypesVendors});
+// // User has many Times, Types has many Users
+// Type.hasMany(User);
+// User.hasMany(Type);
+
+
+// var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
+// // Type.hasMany(User, {through: TypesUsers});
+// // User.hasMany(Type, {through: TypesUsers});
 
 // Vendor Group Model
 var Group = exports.Group = sequelize.define('Group', {
@@ -185,7 +190,7 @@ var Pedestrian = exports.Pedestrian = sequelize.define('pedestrianvolume',{
 
 // Synchronize the schema and create tables
 // 'force: true' removes existing tables and re-create them
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
 .complete(function(err) {
    if (err) {
      console.log('An error occurred while creating the table:', err);
