@@ -142,7 +142,45 @@ exports.findAll = function(callback) {
         }
         return mem;
       }, 0);
-      console.log('VAL', val);
+      return val;
+    });
+    callback(vendors)
+  });
+};
+
+exports.findAllByType = function(params, callback) {
+  Vendor.findAll({
+    attributes: [
+      'image',
+      'description',
+      'status',
+      'latitude',
+      'longitude',
+      'createdAt',
+      'category'
+    ],
+    where: {
+      category: params.category
+    },
+    include: [
+      {
+        model: User,
+        attributes: [
+          'username',
+          'displayname',
+        ]
+      },
+      Rating
+    ]
+  }).then(function(vendors) {
+    vendors = vendors.map(function(val, index) {
+      val.dataValues.avgrating = val.Ratings.reduce(function(mem, val, i, col) {
+        mem += val.rating;
+        if (i === col.length - 1) {
+          mem /= col.length;
+        }
+        return mem;
+      }, 0);
       return val;
     });
     callback(vendors)
@@ -162,7 +200,7 @@ var vendorsNearUsers = function(UserId, miles, callback) {
       for (var i=0; i < VendorIds.length; i++) {
         nearbyVendors.push(VendorIds[i].id);
       }
-      console.log('Nearby Vendors: ', nearbyVendors);
+      // console.log('Nearby Vendors: ', nearbyVendors);
       if (callback) {
         callback(nearbyVendors);
       }
@@ -175,9 +213,9 @@ var calcDistance = function(UserId, VendorId, callback) {
   var qstring = 'WITH userlon AS (SELECT longitude FROM "Users" WHERE id='+UserId+'), userlat AS (SELECT latitude FROM "Users" WHERE id='+UserId+'), vendorlon AS (SELECT longitude FROM "Vendors" WHERE id='+VendorId+'), vendorlat AS (SELECT latitude FROM "Vendors" WHERE id='+VendorId+') SELECT ST_Distance(ST_GeographyFromText(' + "'POINT(' || userlon.longitude || ' ' || userlat.latitude ||')'), ST_GeographyFromText('POINT(' || vendorlon.longitude || ' ' || vendorlat.latitude ||')')) FROM userlon, userlat, vendorlon, vendorlat";
   sequelize.query(qstring)
   .success(function(distance) {
-    console.log('User distance from Vendor in Meters: ', distance[0].st_distance)
+    // console.log('User distance from Vendor in Meters: ', distance[0].st_distance)
     var distance = Number(distance[0].st_distance) * 0.00062137;
-    console.log('User distance from Vendor in Miles: ', distance);
+    // console.log('User distance from Vendor in Miles: ', distance);
     if (callback) {
       callback(distance);
     }
