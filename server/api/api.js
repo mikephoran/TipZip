@@ -58,7 +58,7 @@ exports.addVendor = function(req, res) {
       description: req.body.description,
       status: false,
       UserId: user.id,
-      type: req.body.type
+      category: req.body.category
     })
     .save()
     .complete(function(err) {
@@ -141,6 +141,16 @@ exports.getAll = function(req, res) {
     });
   });
 };
+
+exports.getAllByType = function(req, res) {
+  console.log('getAllByType', req);
+  helpers.findAll(function(vendors) {
+    res.json({
+      success: true,
+      result: vendors
+    });
+  });
+};
 /**
 * Allows currently authenticated vendor to update their vendor account information
 * @function updateVendor
@@ -175,7 +185,7 @@ exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
     'status',
-    'type'
+    'category'
   ]);
   var vendor = {
     username: req.user, //|| 'ravendano',
