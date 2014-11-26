@@ -107,7 +107,7 @@ var CreditCard = exports.Tip = sequelize.define('Tip', {
 });
 
 User.hasMany(CreditCard);
-User.belongsTo(User);
+CreditCard.belongsTo(User);
 
 //Bank Model
 var Bank = exports.Bank = sequelize.define('Bank', {
@@ -155,14 +155,18 @@ var Type = exports.Type = sequelize.define('Type', {
   type: Sequelize.STRING
 });
 
-// Type is N:M with Users and with Vendors
-var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
-Type.hasMany(User, {through: TypesUsers});
-User.hasMany(Type, {through: TypesUsers});
+// Vendors have one type, types have many vendors
+Type.hasMany(Vendor);
+Vendor.belongsTo(Type);
 
-var TypesVendors = exports.TypesVendors = sequelize.define('TypesVendor', {});
-Type.hasMany(Vendor, {through: TypesVendors});
-Vendor.hasMany(Type, {through: TypesVendors});
+// User has many Times, Types has many Users
+Type.hasMany(User);
+User.hasMany(Type);
+
+
+// var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
+// // Type.hasMany(User, {through: TypesUsers});
+// // User.hasMany(Type, {through: TypesUsers});
 
 // Vendor Group Model
 var Group = exports.Group = sequelize.define('Group', {
