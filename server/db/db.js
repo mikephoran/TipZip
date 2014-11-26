@@ -84,7 +84,8 @@ var Vendor = exports.Vendor = sequelize.define('Vendor', {
   },
   totaltip: Sequelize.DECIMAL,
   latitude: Sequelize.FLOAT,
-  longitude: Sequelize.FLOAT
+  longitude: Sequelize.FLOAT,
+  type: Sequelize.STRING
 });
 
 // User and Vendor have 1-1 Relationship
@@ -150,18 +151,18 @@ Rating.belongsTo(Vendor);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-// Type Model
-var Type = exports.Type = sequelize.define('Type', {
-  type: Sequelize.STRING
-});
+// Type Model - DEPRECATED
+// var Type = exports.Type = sequelize.define('Type', {
+//   type: Sequelize.STRING
+// });
 
-// Vendors have one type, types have many vendors
-Type.hasMany(Vendor);
-Vendor.belongsTo(Type);
+// // Vendors have one type, types have many vendors
+// Type.hasMany(Vendor);
+// Vendor.belongsTo(Type);
 
-// User has many Times, Types has many Users
-Type.hasMany(User);
-User.hasMany(Type);
+// // User has many Times, Types has many Users
+// Type.hasMany(User);
+// User.hasMany(Type);
 
 
 // var TypesUsers = exports.TypesUsers = sequelize.define('TypesUser', {});
