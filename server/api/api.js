@@ -134,6 +134,21 @@ exports.getOne = function(req, res) {
 * @param {object} res Response Object
 */
 exports.getAll = function(req, res) {
+  var params = _.pick(req.body, [
+    'category'
+  ]);
+  console.log('\n\nB4STUFF\n\n', params, req.body);
+  if (params.category) {
+    console.log('\n\nPARAMETERS!!!\n\n', params);
+    helpers.findAllByType(params, function(vendors) {
+      res.json({
+        success: true,
+        result: vendors
+      });
+    });
+    return;
+  }
+
   helpers.findAll(function(vendors) {
     res.json({
       success: true,
@@ -142,15 +157,18 @@ exports.getAll = function(req, res) {
   });
 };
 
-exports.getAllByType = function(req, res) {
-  console.log('getAllByType', req);
-  helpers.findAll(function(vendors) {
-    res.json({
-      success: true,
-      result: vendors
-    });
-  });
-};
+// exports.getAllByType = function(req, res) {
+//   console.log('getAllByType', req);
+//   var params = _.pick(req.body, [
+//     'category'
+//   ]);
+//   helpers.findAllByType(params, function(vendors) {
+//     res.json({
+//       success: true,
+//       result: vendors
+//     });
+//   });
+// };
 /**
 * Allows currently authenticated vendor to update their vendor account information
 * @function updateVendor
