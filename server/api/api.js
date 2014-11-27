@@ -137,9 +137,7 @@ exports.getAll = function(req, res) {
   var params = _.pick(req.body, [
     'category'
   ]);
-  console.log('\n\nB4STUFF\n\n', params, req.body);
   if (params.category) {
-    console.log('\n\nPARAMETERS!!!\n\n', params);
     helpers.findAllByType(params, function(vendors) {
       res.json({
         success: true,
@@ -203,11 +201,13 @@ exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
     'status',
-    'category'
+    'category',
+    'latitude',
+    'longitude'
   ]);
   var vendor = {
-    username: req.user, //|| 'ravendano',
-    email: req.user //|| 'ravendano'
+    username: req.user, 
+    email: req.user
   };
   helpers.findVendor(vendor, function(vendor) {
     vendor.updateAttributes(changes)
@@ -278,10 +278,15 @@ exports.addRating = function(req, res) {
   });
 };
 
+exports.info = function(req, res) {
+  helpers.getPersonal({username: req.user}, function(user) {
+    res.json({success: true, result: 'Tip Info Received', data: user});
+  });
+};
+
 exports.getAllPeds = function(req, res) {
   helpers.getAllPeds(function(results) {
     res.json({success:true, result: results});
-    console.log('GET ALL PEDS IS WORKING !!!!!!!!!!!!!!!!!!');
     return;
   })
 };
