@@ -201,11 +201,13 @@ exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
     'status',
-    'category'
+    'category',
+    'latitude',
+    'longitude'
   ]);
   var vendor = {
-    username: req.user, //|| 'ravendano',
-    email: req.user //|| 'ravendano'
+    username: req.user, 
+    email: req.user
   };
   helpers.findVendor(vendor, function(vendor) {
     vendor.updateAttributes(changes)
