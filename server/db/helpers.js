@@ -9,6 +9,7 @@ var User = require('./db').User;
 var Rating = require('./db').Rating;
 var Vendor = require('./db').Vendor;
 var Pedestrian = require('./db').Pedestrian;
+var Tip = require('./db').Tip;
 
 
 /**
@@ -44,7 +45,10 @@ exports.getPersonal = function(user, callback) {
   var email = user.email || user.username;
   User.find({
     where: sequelize.or({ username: username }, { email: email }),
-    include: Vendor
+    include: {
+      model: Vendor,
+      include: Tip
+    }
   }).then(callback);
 };
 /**
