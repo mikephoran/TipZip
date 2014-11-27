@@ -279,9 +279,7 @@ exports.addRating = function(req, res) {
 };
 
 exports.info = function(req, res) {
-  console.log('helllo');
   helpers.getPersonal({username: req.user}, function(user) {
-    console.log('\n\n\n\nheckkk yah\n\n\n', user);
     res.json({success: true, result: 'Tip Info Received', data: user});
   });
 };
