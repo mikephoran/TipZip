@@ -60,10 +60,10 @@ exports.management = function(app) {
   app.use('/', express.static(__dirname + '/../management'));
 
   app.post('/populate', function(req, res) {
-    processData(JSON.parse(req.body.type), JSON.parse(req.body.result)); 
+    processData(JSON.parse(req.body.category), JSON.parse(req.body.result)); 
     res.json({
       success: true, 
-      result: JSON.parse(req.body.type)
+      result: JSON.parse(req.body.category)
     });
   });
 };

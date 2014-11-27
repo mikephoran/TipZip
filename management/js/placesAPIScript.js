@@ -1,7 +1,7 @@
-var map, infoWindow, service, type, searchterm;
+var map, infoWindow, service, category, searchterm;
 
 function initialize() {
-  type = $('title').text();
+  category = $('title').text();
   searchterm = $('#searchterm').text();
 
   map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -60,7 +60,7 @@ function makeCall(results, i) {
     //Process details
     console.log(result);
     var obj = {
-      type: JSON.stringify(type),
+      category: JSON.stringify(category),
       result: JSON.stringify(result)
     };
     
