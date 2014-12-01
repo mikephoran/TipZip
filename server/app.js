@@ -11,7 +11,6 @@ var flash = require('connect-flash');
 var port = require('./config/config').port;
 var app = express();
 var subdomain = require('express-subdomain');
-var seed = require('./db/seed/seed');
 var populateDB = require('./db/seed/populateDB');
 var seedPedestiran = require('./db/seed/pedestrian/seedPedestrian');
 /*

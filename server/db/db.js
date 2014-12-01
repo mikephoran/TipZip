@@ -61,8 +61,14 @@ var User = sequelize.define('User', {
   email: Sequelize.STRING,
   zipcode: Sequelize.FLOAT,
   age: Sequelize.INTEGER,
-  latitude: Sequelize.FLOAT,
-  longitude: Sequelize.FLOAT,
+  latitude: {
+    type: Sequelize.FLOAT,
+    defaultValue: 43.645016
+  },
+  longitude: {
+    type: Sequelize.FLOAT,
+    defaultValue: -79.39092
+  },
   displayname: Sequelize.STRING,
   firstname: Sequelize.STRING,
   middlename: Sequelize.STRING,

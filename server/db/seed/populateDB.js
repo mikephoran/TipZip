@@ -1,78 +1,64 @@
 var User = require('../db').User;
 var Vendor = require('../db').Vendor;
-var Type = require('../db').Type;
 var Rating = require('../db').Rating;
 var sequelize = require('../db').sequelize;
-var TypesVendors = require('../db').TypesVendors;
-var TypesUsers = require('../db').TypesUsers;
-var SeedTypes = require('./seed').SeedTypes;
 
-var typeimages = {
-  Art:  '',
-  Music: '',
-  Performance: '',
-  Food: '',
-  Goods: '',
-  FarmersMarket: ''
-};
 
 var truncateIndex = 0;
-var truncateUser = true;
+var truncateUser = false;
 
 var addVendor = exports.addVendor = function(allData) {
 
-  var type = allData.type || 'Food';
+  var category = allData.category || 'Food';
 
-  if (type === 'Farmers Market' && truncateIndex >= 5) {
+  if (category === 'Farmers Market' && truncateIndex >= 5) {
     truncateIndex = 1; 
-  } else if (type === 'Farmers Market' && truncateIndex < 5) {
+  } else if (category === 'Farmers Market' && truncateIndex < 5) {
     truncateIndex++; 
   }
 
-  if (type === 'Music' && truncateIndex >= 40) {
+  if (category === 'Music' && truncateIndex >= 25) {
     truncateIndex = 1; 
-  } else if (type === 'Music' && truncateIndex < 40) {
+  } else if (category === 'Music' && truncateIndex < 25) {
     truncateIndex++; 
   } 
 
-  if (type === 'Food' && truncateIndex >= 40) {
+  if (category === 'Food' && truncateIndex >= 20) {
     truncateIndex = 1; 
-  } else if (type === 'Food' && truncateIndex < 40) {
+  } else if (category === 'Food' && truncateIndex < 20) {
     truncateIndex++; 
   } 
 
-  if (type === 'Performance' && truncateIndex >= 10) {
+  if (category === 'Performance' && truncateIndex >= 10) {
     truncateIndex = 1; 
-  } else if (type === 'Performance' && truncateIndex < 10) {
+  } else if (category === 'Performance' && truncateIndex < 10) {
     truncateIndex++; 
   }
 
-  if (type === 'Goods' && truncateIndex >= 30) {
+  if (category === 'Goods' && truncateIndex >= 15) {
     truncateIndex = 1; 
-  } else if (type === 'Goods' && truncateIndex < 30) {
+  } else if (category === 'Goods' && truncateIndex < 15) {
     truncateIndex++; 
   }
 
-  if (type === 'Art' && truncateIndex >= 20) {
+  if (category === 'Art' && truncateIndex >= 15) {
     truncateIndex = 1; 
-  } else if (type === 'Art' && truncateIndex < 20) {
+  } else if (category === 'Art' && truncateIndex < 15) {
     truncateIndex++; 
   }
 
   //set defaults for User Properties of Vendor. 
-  var displayname = type + ' Vendor ' + truncateIndex;
+  var displayname = category + ' Vendor ' + truncateIndex;
   var username = displayname.split(' ').join('');
   var pass = 'test';
-  var zip = allData.zip || "M4B 1B3";
   var email = username.split(' ').join('') + '@test.com'
   var age = Math.floor(Math.random()*40 + 15);
   
   //set defaults for Vendor Properties of Vendor.
   var long = allData.long || 43.661165;
   var lat = allData.lat || -79.390919;
-  var type = allData.type || 'Food';
+  var category = allData.category|| 'Food';
   var totaltip = Math.floor(Math.random() * 50000);
-  var image = typeimages[type];
   var desc = "Enter a description";
 
   User
@@ -82,14 +68,12 @@ var addVendor = exports.addVendor = function(allData) {
       displayname: displayname,
       username: username, 
       password: pass, 
-      email: email, 
-      zipcode: zip, 
+      email: email,  
       age: age
     }
   })
   .success(function(user, created) {
     var useridofvendor = user.values.id;
-    var zipofvendor = user.values.zipcode;
 
     Vendor
     .findOrCreate({
@@ -98,41 +82,27 @@ var addVendor = exports.addVendor = function(allData) {
         UserId: useridofvendor, 
         latitude: lat, 
         longitude: long, 
-        type: type, 
+        category: category, 
         totaltip: totaltip, 
-        image: image, 
         description: desc
       }
     })
     .success(function(vendor, created) {
 
-      TypesVendors.findOrCreate({
-        where: {VendorId: vendor.values.id},
-        defaults: {
-          VendorId: vendor.values.id,
-          TypeId: SeedTypes.indexOf(type)+1
-        }
-      })
-
       if (truncateUser) {
-        addTruncatedUsersAndReviews(allData, vendor, zipofvendor)
+        addTruncatedUsersAndReviews(allData, vendor)
       }
       else {
-        addUsersAndReviews(allData, vendor, zipofvendor)
+        addUsersAndReviews(allData, vendor)
       }
 
-      // if (Math.random()*100 > 75) {
-      //    truncateUser = false;
-      //  }
-      //  else {
-      //   truncateUser = true;
-      //  }
-      // truncateUser = !truncateUser
+      truncateUser = !truncateUser
+    
     }) 
   })
 };
 
-var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor) {
+var addUsersAndReviews = exports.addUser = function(allData, vendor) {
 
   console.log('adding new Users')
   if (allData.reviews) {
@@ -150,7 +120,6 @@ var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor
 
       var pass = 'test';
       var email = username + '@test.com';
-      var zip = zipofvendor;
       var age = Math.floor(Math.random()*50 + 18);
       
 
@@ -166,19 +135,10 @@ var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor
           username: username, 
           password: pass, 
           email: email, 
-          zipcode: zip, 
           age: age
         }
       })
       .success(function(user, created) {
-
-        TypesUsers.findOrCreate({
-        where: {UserId: user.values.id},
-        defaults: {
-          UserId: user.values.id,
-          TypeId: SeedTypes.indexOf(allData.type)+1
-        }
-      })
         console.log('ADDING REVIEW FOR', rating, user.dataValues.id, vendorid);
         addReview(rating, user.dataValues.id, vendorid);
       })
@@ -186,7 +146,7 @@ var addUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor
   }
 };
 
-var addTruncatedUsersAndReviews = exports.addUser = function(allData, vendor, zipofvendor) {
+var addTruncatedUsersAndReviews = exports.addUser = function(allData, vendor) {
 
   console.log('Adding Truncated')
 
@@ -196,10 +156,12 @@ var addTruncatedUsersAndReviews = exports.addUser = function(allData, vendor, zi
 
       sequelize.query('SELECT "UserId", COUNT(*) from "Ratings" GROUP BY "UserId" HAVING COUNT(*)<10')
       .success(function(rows) {
+        
         var randomRow = Math.floor(Math.random()*(rows.length-1));
         var UserToMapOnto = rows[randomRow].UserId;
         var vendorid = vendor.values.id;
         var rating = review.rating;
+        
         addReview(rating, UserToMapOnto, vendorid);
 
       });
@@ -233,14 +195,13 @@ var addReview = exports.addReview = function (rating, userid, vendorid) {
   })
 };
 
-var processData = exports.processData = function(type, details) {
+var processData = exports.processData = function(category, details) {
 
   var allData = {
     //vendorname: details.name,
     lat: details.geometry.location.k,
     long: details.geometry.location.B,
-    zip: details.address_components[details.address_components.length-1].long_name,
-    type: type,
+    category: category,
     reviews: details.reviews
   }
 
