@@ -17,9 +17,9 @@ var addVendor = exports.addVendor = function(allData) {
     truncateIndex++; 
   }
 
-  if (category === 'Music' && truncateIndex >= 25) {
+  if (category === 'Music' && truncateIndex >= 20) {
     truncateIndex = 1; 
-  } else if (category === 'Music' && truncateIndex < 25) {
+  } else if (category === 'Music' && truncateIndex < 20) {
     truncateIndex++; 
   } 
 
@@ -41,9 +41,9 @@ var addVendor = exports.addVendor = function(allData) {
     truncateIndex++; 
   }
 
-  if (category === 'Art' && truncateIndex >= 15) {
+  if (category === 'Art' && truncateIndex >= 10) {
     truncateIndex = 1; 
-  } else if (category === 'Art' && truncateIndex < 15) {
+  } else if (category === 'Art' && truncateIndex < 10) {
     truncateIndex++; 
   }
 
@@ -60,6 +60,12 @@ var addVendor = exports.addVendor = function(allData) {
   var category = allData.category|| 'Food';
   var totaltip = Math.floor(Math.random() * 50000);
   var desc = "Enter a description";
+  
+  if (truncateIndex < 5) {
+    var image = allData.category + truncateIndex + '.jpg';
+  } else {
+    var image = allData.category + (Math.floor(Math.random()*4)+1) + '.jpg';
+  }
 
   User
   .findOrCreate({
@@ -84,7 +90,8 @@ var addVendor = exports.addVendor = function(allData) {
         longitude: long, 
         category: category, 
         totaltip: totaltip, 
-        description: desc
+        description: desc,
+        image: image
       }
     })
     .success(function(vendor, created) {
