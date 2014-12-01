@@ -18,7 +18,10 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
       closestUser = null;
       rec = null;
       console.log('\n You need to review more vendors to receive a recommendation! \n')
-      return 
+      if(callback){
+        callback(rec);
+      }
+      return; 
     }
     var vendors = [];
     var ratings = [];
@@ -50,6 +53,9 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
         nearestNeighbor = null;
         rec = nearestNeighbor;
         console.log('No Neighbors Found')
+        if(callback){
+          callback(rec);
+        }
         return;
       } else if (result.length === 1 ) {
         console.log("Only found 1", result);
