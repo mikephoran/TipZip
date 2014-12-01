@@ -5,7 +5,7 @@ var sequelize = require('../db').sequelize;
 
 
 var truncateIndex = 0;
-var truncateUser = false;
+var truncateUser = true;
 
 var addVendor = exports.addVendor = function(allData) {
 
@@ -103,7 +103,7 @@ var addVendor = exports.addVendor = function(allData) {
         addUsersAndReviews(allData, vendor)
       }
 
-      truncateUser = !truncateUser
+      // truncateUser = !truncateUser
     
     }) 
   })
