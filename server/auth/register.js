@@ -48,9 +48,9 @@ var generateUser = function(user) {
 * @param {string} password.newpw New Password.
 */
 var changePassword = function(user, password) {
-  return new BPromise(function(resolve) {
+  return new BPromise(function(resolve, reject) {
     helpers.getPersonal(user, function(user) {
-      helpers.checkPassword(user, password.oldpw)
+      checkPassword(user, password.oldpw)
       .then(function(result) {
         if (result) {
           bcrypt.hash(password.newpw, 10, function(err, hash) {
@@ -58,7 +58,7 @@ var changePassword = function(user, password) {
             .success(resolve);
           });
         } else {
-          resolve(result);
+          reject(result);
         }
       });
     });
@@ -75,14 +75,13 @@ exports.changePassword = function(req, res) {
     newpw: req.body.newPassword
   };
   changePassword(user, password)
-  .then(function(err) {
-    if (err) {
-      console.log('Password Change Failure:', err);
-      res.json({success: false, result: 'Invalid Password'});
-      return;
-    }
+  .then(function() {
     console.log('Password Change Success!');
     res.json({success: true, result: 'Password Change Success'});
+  })
+  .catch(function(err) {
+    console.log('Password Change Failure:', err);
+    res.json({success: false, result: 'Invalid Password'});
   });
 };
 
