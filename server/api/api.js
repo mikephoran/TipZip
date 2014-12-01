@@ -291,7 +291,12 @@ exports.getDistance = function(req,res){
 
 exports.getRecommendations = function(req,res){
   recommendations.findRecommendation(req.body.userID,function(vendors){
+    console.log(vendors," from get recos");
    //make a call to find all vendors with id
+   if(vendors  === null){
+     res.json({success:true, result: null, status: "Need to review more vendors."});
+     return;
+   }
     Vendor.findAll({
     attributes: [
       'image',
