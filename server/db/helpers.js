@@ -116,7 +116,7 @@ exports.findOne = function(user, callback) {
 * @param {function} callback Function to be executed on results of the query. 
 */
 
-exports.findAll = function(callback) {
+exports.findAll = function(callback, user) {
   Vendor.findAll({
     attributes: [
       'image',
@@ -146,6 +146,7 @@ exports.findAll = function(callback) {
         }
         return mem;
       }, 0);
+      val.dataValues.requestedby = user.id;
       return val;
     });
     callback(vendors)

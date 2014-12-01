@@ -137,44 +137,25 @@ exports.getAll = function(req, res) {
   var params = _.pick(req.body, [
     'category'
   ]);
-  if (params.category) {
-    helpers.findAllByType(params, function(vendors) {
+  helpers.findUser({username: req.user}, function(user) {
+    if (params.category) {
+      helpers.findAllByType(params, function(vendors) {
+        res.json({
+          success: true,
+          result: vendors
+        });
+      }, user);
+      return;
+    }
+
+    helpers.findAll(function(vendors) {
       res.json({
         success: true,
         result: vendors
       });
-    });
-    return;
-  }
-
-  helpers.findAll(function(vendors) {
-    res.json({
-      success: true,
-      result: vendors
-    });
+    }, user);
   });
 };
-
-// exports.getAllByType = function(req, res) {
-//   console.log('getAllByType', req);
-//   var params = _.pick(req.body, [
-//     'category'
-//   ]);
-//   helpers.findAllByType(params, function(vendors) {
-//     res.json({
-//       success: true,
-//       result: vendors
-//     });
-//   });
-// };
-/**
-* Allows currently authenticated vendor to update their vendor account information
-* @function updateVendor
-* @memberof module:api
-* @instance
-* @param {object} req Request Object
-* @param {object} res Response Object
-*/
 
 /**
 * Allows a user (or vendor) to grab all of their information
@@ -197,6 +178,14 @@ exports.getPersonal = function(req, res) {
   });
 };
 
+/**
+* Allows currently authenticated vendor to update their vendor account information
+* @function updateVendor
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
 exports.updateVendor = function(req, res) {
   var changes = _.pick(req.body, [
     'description',
