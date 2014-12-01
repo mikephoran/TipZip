@@ -32,6 +32,8 @@ exports.api = function(app) {
   app.get('/vendor/:vendor/status', authenticate, api.getStatus);
 
   app.post('/user/update', authenticate, api.updateUser);
+  app.post('/user/calcDistance', authenticate, api.getDistance);
+  app.post('/user/getRecommendations', authenticate, api.getRecommendations);
   app.get('/user/personal', authenticate, api.getPersonal);
 
   app.get('/peds', authenticate, api.getAllPeds);

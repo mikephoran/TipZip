@@ -20,7 +20,6 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
       console.log('\n You need to review more vendors to receive a recommendation! \n')
       return 
     }
-
     var vendors = [];
     var ratings = [];
 
@@ -53,7 +52,8 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
         console.log('No Neighbors Found')
         return;
       } else if (result.length === 1 ) {
-        nearestNeighbor = result[0].User;
+        console.log("Only found 1", result);
+        nearestNeighbor = result[0];
       } else {
         nearestNeighbor = findMostSimilar(userinfo, result);
       }
@@ -101,7 +101,6 @@ var avgSimilarity = function (user, neighbor, traits) {
 var findMostSimilar = function(user, neighbors) {
   var mostSimilar = 0;
   var result = null;
-
   for (var i=0; i<neighbors.length; i++) {
     var similarity = avgSimilarity(user, neighbors[i], 3);
     
@@ -110,7 +109,6 @@ var findMostSimilar = function(user, neighbors) {
       result = neighbors[i];
     }
   }
-
   return result;
 };
 
