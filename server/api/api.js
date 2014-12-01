@@ -4,7 +4,9 @@
 * @module api
 */
 var helpers = require('../db/helpers');
+var recommendations = require('../db/recommendation');
 var Vendor = require('../db/db').Vendor;
+var User = require('../db/db').User
 var Rating = require('../db/db').Rating;
 var multipart = require('connect-multiparty');
 var _ = require('lodash');
@@ -295,5 +297,41 @@ exports.getDistance = function(req,res){
   helpers.calcDistance(req.body.userID,req.body.vendorID,function(distance){
     res.json({success:true, result:"Distance info received", data: distance});
     return;
-  })
+  });
 }
+
+exports.getRecommendations = function(req,res){
+  recommendations.findRecommendation(req.body.userID,function(vendors){
+   //make a call to find all vendors with id
+    Vendor.findAll({
+    attributes: [
+      'image',
+      'description',
+      'status',
+      'latitude',
+      'longitude',
+      'createdAt',
+      'category'
+    ],
+    where: {
+      id: vendors
+    },
+    include: [
+      {
+        model: User,
+        attributes: [
+          'username',
+          'displayname',
+        ]
+      },
+      Rating
+    ]
+  }).success(function(vendorDetails){
+      console.log(vendorDetails," IS VENDORDETAILS");
+      //may need to make call to grab user info from 
+      res.json({success:true, result: vendorDetails, status: "Vendor details received."});
+    }).catch(function(err){
+      console.log("Error retrieving vendor details ",err);
+    });
+  });
+};  
