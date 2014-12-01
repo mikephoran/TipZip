@@ -54,6 +54,7 @@ exports.auth = function(app) {
     res.sendStatus(401);
   });
   app.post('/register', auth.register);
+  app.post('/changepassword', authenticate, auth.changePassword);
 };
 
 /* ======= subdomain: 'management' ======= */
