@@ -325,7 +325,7 @@ exports.getRecommendations = function(req,res){
       console.log(vendorDetails," IS VENDORDETAILS");
       console.log(vendorDetails.length)
       //may need to make call to grab user info from 
-      res.json({success:true, result: ['hi'], status: "Vendor details received."});
+      res.json({success:true, result: vendorDetails, status: "Vendor details received."});
     }).catch(function(err){
       console.log("Error retrieving vendor details ",err);
     });
