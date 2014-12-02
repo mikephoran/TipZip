@@ -17,7 +17,7 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
     if (requestedUser_ratings.length < 3) {
       closestUser = null;
       rec = null;
-      console.log('\n You need to review more vendors to receive a recommendation! \n')
+      console.log('\n User has less than 3 ratings! \n', 'users ratings:', requestedUser_ratings)
       if(callback){
         callback(rec);
       }
