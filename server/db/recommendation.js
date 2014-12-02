@@ -17,7 +17,7 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
     if (requestedUser_ratings.length < 3) {
       closestUser = null;
       rec = null;
-      console.log('\n You need to review more vendors to receive a recommendation! \n')
+      console.log('\n User has less than 3 ratings! \n', 'users ratings:', requestedUser_ratings)
       if(callback){
         callback(rec);
       }
@@ -31,7 +31,7 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
       ratings.push(requestedUser_ratings[i].rating);
     }
 
-    var userinfo = {User: requestedUser, Vendor1: vendors[0], Vendor2: vendors[1], Vendor3: vendors[2]};
+    var userinfo = {User: requestedUser, Vendor1: ratings[0], Vendor2: ratings[1], Vendor3: ratings[2]};
 
     console.log('vendor0', vendors[0], 'vendor1', vendors[1], 'vendor2', vendors[2]);
 
@@ -61,7 +61,9 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
         console.log("Only found 1", result);
         nearestNeighbor = result[0];
       } else {
+        console.log('userinfo', userinfo, "result", result);
         nearestNeighbor = findMostSimilar(userinfo, result);
+        console.log(nearestNeighbor);
       }
       Rating.findAll({
         where: sequelize.and({UserId: nearestNeighbor.User}, {rating: {gt: 3}}, {VendorId: {ne: vendors[0]}}, {VendorId: {ne: vendors[1]}}, {VendorId: {ne: vendors[2]}}),

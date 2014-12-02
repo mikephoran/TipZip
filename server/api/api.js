@@ -297,6 +297,7 @@ exports.getRecommendations = function(req,res){
      res.json({success:true, result: null, status: "Need to review more vendors."});
      return;
    }
+   console.log('FIND THE VENDOR INFO')
     Vendor.findAll({
     attributes: [
       'image',
@@ -322,6 +323,7 @@ exports.getRecommendations = function(req,res){
     ]
   }).success(function(vendorDetails){
       console.log(vendorDetails," IS VENDORDETAILS");
+      console.log(vendorDetails.length)
       //may need to make call to grab user info from 
       res.json({success:true, result: vendorDetails, status: "Vendor details received."});
     }).catch(function(err){
