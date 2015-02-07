@@ -6,7 +6,7 @@ var sequelize = require('./db').sequelize;
 var rec = null;
 
 /**
-* Calculate recommended Vendors based on User's ratings. 
+* Calculate recommended Vendors for requested User based on User's rating history
 * @function findRecommendation
 * @memberof module:recommendation
 * @instance

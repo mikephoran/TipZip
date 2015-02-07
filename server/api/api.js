@@ -275,6 +275,14 @@ exports.info = function(req, res) {
   });
 };
 
+/**
+* Get all pedestrian data points from database
+* @function getAllPeds
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
 exports.getAllPeds = function(req, res) {
   helpers.getAllPeds(function(results) {
     res.json({success:true, result: results});
@@ -282,6 +290,14 @@ exports.getAllPeds = function(req, res) {
   })
 };
 
+/**
+* Get distance in miles between requested User and requested Vendor
+* @function getDistance
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
 exports.getDistance = function(req,res){
   helpers.calcDistance(req.body.userID,req.body.vendorID,function(distance){
     res.json({success:true, result:"Distance info received", data: distance});
@@ -289,15 +305,26 @@ exports.getDistance = function(req,res){
   });
 }
 
+
+/**
+* Get recommended vendors for requested user
+* @function getRecommendations
+* @memberof module:api
+* @instance
+* @param {object} req Request Object
+* @param {object} res Response Object
+*/
 exports.getRecommendations = function(req,res){
+  
+  //Run recommendation algorithm, callback has access to array of recommended vendors
   recommendations.findRecommendation(req.body.userID,function(vendors){
-    console.log(vendors," from get recos");
-   //make a call to find all vendors with id
+   
+   //If no vendors recommended, respond that user needs to rate more vendors.
    if(vendors  === null){
      res.json({success:true, result: null, status: "Need to review more vendors."});
      return;
    }
-   console.log('FIND THE VENDOR INFO')
+   //If vendors recommended, then pull info for each vendor
     Vendor.findAll({
     attributes: [
       'image',
@@ -322,9 +349,7 @@ exports.getRecommendations = function(req,res){
       Rating
     ]
   }).success(function(vendorDetails){
-      console.log(vendorDetails," IS VENDORDETAILS");
-      console.log(vendorDetails.length)
-      //may need to make call to grab user info from 
+    //Send Vendor details to client
       res.json({success:true, result: vendorDetails, status: "Vendor details received."});
     }).catch(function(err){
       console.log("Error retrieving vendor details ",err);
