@@ -156,7 +156,7 @@ var Pedestrian = sequelize.define('pedestrianvolume',{
 
 /* 
 * Synchronize the schema and create tables
-* "force: true" removes existing tables and re-create them
+* "force: true" removes existing tables and re-creates them
 */
 sequelize.sync({ force: false })
 .complete(function(err) {

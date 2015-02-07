@@ -115,7 +115,6 @@ exports.findOne = function(user, callback) {
 * @instance
 * @param {function} callback Function to be executed on results of the query. 
 */
-
 exports.findAll = function(callback, user) {
   Vendor.findAll({
     attributes: [
@@ -154,6 +153,14 @@ exports.findAll = function(callback, user) {
   });
 };
 
+/**
+* Finds all vendors based on the category (type) of the Vendor
+* @function findAllByType
+* @memberof module:dbHelpers
+* @instance
+* @param {object} object that contains a string category property
+* @param {function} callback Function to be executed on results of the query. 
+*/
 exports.findAllByType = function(params, callback) {
   Vendor.findAll({
     attributes: [
@@ -193,7 +200,15 @@ exports.findAllByType = function(params, callback) {
   });
 };
 
-//Return all Vendors within X miles of User.  Applies callback to an array of VendorIds. 
+/**
+* Find all Vendors within X miles of User. 
+* @function vendorsNearUsers
+* @memberof module:dbHelpers
+* @instance
+* @param {number} UserID of requested User
+* @param {number} mile radius around User to find Vendors
+* @param { function} callback applies to array of found vendors
+*/
 var vendorsNearUsers = function(UserId, miles, callback) {
   //translate miles to meters
   var radius = miles*1.6*1000;
@@ -214,7 +229,15 @@ var vendorsNearUsers = function(UserId, miles, callback) {
   });
 };
 
-//Calculate Distance between User and Vendor. Applies callback to distance (in miles).
+/**
+* Calculate Distance between one User and one Vendor.
+* @function calcDistance
+* @memberof module:dbHelpers
+* @instance
+* @param {number} UserID of requested User
+* @param {number} VendorID of requested Vendor
+* @param { function} callback applied to the distance (in miles) between requested User and Vendor.
+*/
 exports.calcDistance = function(UserId, VendorId, callback) {
   var qstring = 'WITH userlon AS (SELECT longitude FROM "Users" WHERE id='+UserId+'), userlat AS (SELECT latitude FROM "Users" WHERE id='+UserId+'), vendorlon AS (SELECT longitude FROM "Vendors" WHERE id='+VendorId+'), vendorlat AS (SELECT latitude FROM "Vendors" WHERE id='+VendorId+') SELECT ST_Distance(ST_GeographyFromText(' + "'POINT(' || userlon.longitude || ' ' || userlat.latitude ||')'), ST_GeographyFromText('POINT(' || vendorlon.longitude || ' ' || vendorlat.latitude ||')')) FROM userlon, userlat, vendorlon, vendorlat";
   sequelize.query(qstring)
@@ -228,10 +251,24 @@ exports.calcDistance = function(UserId, VendorId, callback) {
   })
 }
 
+/**
+* Find all pedestrians
+* @function getAllPeds
+* @memberof module:dbHelpers
+* @instance
+* @param { function} callback applied to array of all Pedestrians return from database
+*/
+exports.getAllPeds = function(callback) {
+  Pedestrian.findAll()
+  .success(function(result) {
+    callback(result);
+  })
+}
 
 
-
-
+/*
+* ==== FUNCTIONS FOR TESTING POSTGIS====
+*/
 var addUser = function(username, password, email, latitude, longitude, zipcode, age, displayname, firstname, middlename, lastname) {
   //username, password and e-mail are required arguments
   var newUser = {
@@ -267,16 +304,14 @@ var addVendor = function(UserId, latitude, longitude, totaltip, image, descripti
   Vendor.create(newVendor);
 };
 
-exports.getAllPeds = function(callback) {
-  Pedestrian.findAll()
-  .success(function(result) {
-    callback(result);
-  })
-}
 
 //Seed Data for Testing PostGIS Functions
 // setTimeout(addUser.bind(this, 'test', 'test', 'test', 43.645016, -79.39092), 5000);
 // setTimeout(addUser.bind(this, 'test', 'test', 'test', 43.666503, -79.381121), 5000);
 // setTimeout(addVendor.bind(this, 2, 43.666503, -79.381121), 10000);
 // // setTimeout(calcDistance.bind(this, 1, 1), 15000);
-// setTimeout(vendorsNearUsers.bind(this,2,2), 15000);
+// setTimeout(vendorsNearUsers.bind(this, 2, 2), 15000);
+
+/*
+* ==== END FUNCTIONS FOR TESTING POSTGIS====
+*/
