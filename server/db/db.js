@@ -4,7 +4,7 @@
 var Sequelize = require('sequelize');
 var config = require('../config/config.js');
 
-// UNCOMMENT TO LINE 19 FOR HEROKU PRODUCTION PG DATABASE
+// UNCOMMENT TO LINE 21 FOR HEROKU PRODUCTION PG DATABASE
 // if (process.env.HEROKU_POSTGRESQL_GRAY_URL) {
 //   var match = process.env.HEROKU_POSTGRESQL_GRAY_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
 // }  else {
@@ -20,7 +20,7 @@ var config = require('../config/config.js');
 //   native: true
 // });
 
-// UNCOMMENT TO LINE 39 FOR LOCAL PG DATABASE
+// UNCOMMENT TO LINE 41 FOR LOCAL PG DATABASE
 var isNative = false;
 var connectionString = config.dialect + '://' 
                      + config.username + ':' 

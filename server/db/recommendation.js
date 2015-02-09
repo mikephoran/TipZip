@@ -3,8 +3,6 @@ var Vendor = require('./db').Vendor;
 var Rating = require('./db').Rating;
 var sequelize = require('./db').sequelize;
 
-var rec = null;
-
 /**
 * Calculate recommended Vendors for requested User based on User's rating history
 * @function findRecommendation
@@ -13,24 +11,23 @@ var rec = null;
 * @param {number} [requestedUser] UserId of User to find recommendations for
 * @param {function} [callback] callback function to be executed on array of recommended Vendors
 */
-var findRecommendation = exports.findRecommendation = function(requestedUser, callback) {
-
-  var closestUser = null;
-  
+var findRecommendation = exports.findRecommendation = function(requestedUser, callback, precision) {
+    
   //Find all Ratings for the requestedUser and order by VendorID (lowest to highest)
   Rating.findAll({
     where: {UserId:requestedUser},
     order: '"VendorId"'
   })
   .success(function(requestedUser_ratings) {
-    //If requestedUser has less than 3 total ratings, then not enough ratings to make recommendation.
-    //Stop algorithm and pass "null" recommendations to callback
-    if (requestedUser_ratings.length < 3) {
-      closestUser = null;
-      rec = null;
-      console.log('\n User has less than 3 ratings! \n', 'users ratings:', requestedUser_ratings)
+    
+    precision = precision || requestedUser_ratings.length;
+      console.log('Finding Recommendation at precision level: ', precision);
+    
+    //If precision is less than 1, end algorithm, no recommendations can be made.
+    if (precision < 1) {
+      console.log('\n Line 31: FAILURE EXIT CONDITION MET: \n', 'users ratings: ', requestedUser_ratings)
       if(callback){
-        callback(rec);
+        callback(null);
       }
       return; 
     }
@@ -38,75 +35,81 @@ var findRecommendation = exports.findRecommendation = function(requestedUser, ca
     var vendors = [];
     var ratings = [];
     
-    //If requestedUser has more than 3 total ratings, then for each rating save the VendorID and Rating in parallel arrays.
-    for (var i=0; i<requestedUser_ratings.length; i++) {
+    //If precision greater than 1, then for each rating (up to precision #) save the VendorID and Rating in parallel arrays.
+    for (var i=0; i<precision; i++) {
       vendors.push(requestedUser_ratings[i].VendorId)
       ratings.push(requestedUser_ratings[i].rating);
     }
     
-    //Create reference object that contains RequestedUser ID and Ratings of first 3 vendors.
-    var userinfo = {User: requestedUser, Vendor1: ratings[0], Vendor2: ratings[1], Vendor3: ratings[2]};
+    //Create reference object that contains RequestedUser ID and Ratings of vendors
+    console.log('Creating RequestedUser Info for Precision Level: ', precision);
+    var userinfo = {User: requestedUser};
+    vendors.forEach(function(vendor, i) {
+      userinfo["vendor" + i] = ratings[i];
+      console.log('RequestedUser #' + userinfo.User + ' gave vendorId# ' + vendors[i] + ' a rating of ' + userinfo['vendor'+i]);
+    })
 
-    console.log('vendor0', vendors[0], 'vendor1', vendors[1], 'vendor2', vendors[2]);
-    
-    //Find all ratings of first 3 Vendors and order first by UserID, then by VendorID
+    //Find all ratings of each vendor and order first by UserID, then by VendorID
     //Example query return: User1: Vendor1review, User1: Vendor2review, User1: Vendor3review, User2:Vendor1Review, etc.
     Rating.findAll({
-      where: {VendorId: [vendors[0], vendors[1], vendors[2]]},
+      where: {VendorId: vendors},
       order: '"UserId", "VendorId"'
     }).success(function(neighbor_ratings){
-      //Find Neighbor Users and ensure that each neighbor rated all 3 Vendors, not just 1 or 2 of them, i.e.:
-      //For each rating, check that rating 2 ahead  is same User, if so save User and those 3 Ratings and skip 3 Ratings ahead.
-      //Results array will contain object for each Neighbors that rated all 3 Vendors
+      //Find Neighbor Users and ensure that each neighbor rated all vendors, not just a subset, i.e.:
+      //For each rating, check that the rating [precision#-1] is same User, this means User rated all vendors
       var result = [];
       for (var i=0; i<neighbor_ratings.length; i++) {
         var aUser = neighbor_ratings[i].dataValues.UserId;
-        if (i+2 < neighbor_ratings.length && aUser === neighbor_ratings[i+2].dataValues.UserId && aUser !==requestedUser) {
-          result.push({User: aUser, Vendor1: neighbor_ratings[i].dataValues.rating, Vendor2: neighbor_ratings[i+1].dataValues.rating, Vendor3: neighbor_ratings[i+2].dataValues.rating});
-          i+=3;
-        } 
-      }
-      console.log('User Being Queried', userinfo);
-      console.log('Neighbors', result);
-      
-      //If 0 Neighbors found: stop algorithm and pass "null" to callback
-      if(result.length === 0) {
-        nearestNeighbor = null;
-        rec = nearestNeighbor;
-        console.log('No Neighbors Found')
-        if(callback){
-          callback(rec);
+        if (i+(precision-1) < neighbor_ratings.length && aUser === neighbor_ratings[i+(precision-1)].dataValues.UserId && aUser !==requestedUser) {
+          var neighbor = {User: aUser};
+          vendors.forEach(function(vendor, j) {
+            neighbor['vendor'+j] = neighbor_ratings[i+j].dataValues.rating;
+          })
+          result.push(neighbor);
+          i+=(precision-1);
         }
+      }
+      console.log('User Being Queried: ', userinfo);
+      console.log('Neighbors found: ', result);
+      
+      //If 0 Neighbors found: rerun with less precision
+      if(result.length === 0) {
+        console.log('Recurse at Line 80: No neighbor found with ratings for all vendors')
+        findRecommendation(requestedUser, callback, precision-1);
         return;
         //If 1 Neighbor found: set nearestNeighbor to that neighbor object
       } else if (result.length === 1 ) {
-        console.log("Only found 1", result);
+        console.log("Found exactly 1 neighbor: ", result);
         nearestNeighbor = result[0];
       } else {
         //If 2+ Neighbors found: set nearestNeighbor to neighbor with MOST SIMILAR ratings to requested User
-        nearestNeighbor = findMostSimilar(userinfo, result);
+        nearestNeighbor = findMostSimilar(userinfo, result, precision);
+        console.log('Nearest Neighbor Calculated: ', nearestNeighbor);
       }
-      //Find NearestNeighbor, and return in descending order all ratings greater than 3 of the 3 vendors
+      //Find NearestNeighbor, and return all ratings of Vendors not already reviewed by Requested User greater than 3 
+      console.log('Determining if Nearest Neighbor had a useful review')
       Rating.findAll({
-        where: sequelize.and({UserId: nearestNeighbor.User}, {rating: {gt: 3}}, {VendorId: {ne: vendors[0]}}, {VendorId: {ne: vendors[1]}}, {VendorId: {ne: vendors[2]}}),
+        where: sequelize.and({UserId: nearestNeighbor.User}, {rating: {gt: 3}}),
         order: 'rating DESC'
       }).success(function(nearestNeighbor_ratings) {
-        //If query brings back vendors, push the VendorID into results array. Recommend results array.
-        if (nearestNeighbor_ratings.length > 0) {
-          var result = [];
-          for (var i=0; i<nearestNeighbor_ratings.length; i++) {
-            if (vendors.indexOf(nearestNeighbor_ratings[i].dataValues.VendorId > 0)) {
-              result.push(nearestNeighbor_ratings[i].dataValues.VendorId);
-            }
+        var result = [];
+        nearestNeighbor_ratings.forEach(function(rating) {
+          console.log(rating.dataValues)
+          if (vendors.indexOf(rating.dataValues.VendorId) < 0) {
+            result.push(rating.dataValues.VendorId);
           }
-          rec = result;
+          console.log('Result: ', result)  
+        });
+        if (result.length>0) {
+          if (callback) { 
+            console.log('\n Line 104: SUCCESS EXIT CONDITION MET')
+            callback(result);
+            return
+          }
         } else {
-          //If query brings back no vendors (nearest neighbor did not rate any 3 vendors greater than 3), recommend null.
-          rec = null;
-        }
-        console.log('\n RECOMMENDED VENDORS: ', rec, '\n');
-        if (callback) {
-          callback(rec);
+          console.log('Recurse at Line 110: NearestNeighbor did not have a useful review')
+          findRecommendation(requestedUser, callback, precision-1);
+          return;
         }
       })
     })
@@ -136,18 +139,18 @@ var calcSimilarity = function(a, b, max) {
 * @instance
 * @param {object} [user] Requested User object containing UserId and ratings for the 3 vendors
 * @param {object} [neighbor] Neighbor User object, containing UserID and ratings for the 3 vendors
-* @param {number} [traits] The number of individual traits (here: ratings) being averaged.
+* @param {number} [precision] The number of individual ratings being averaged.
 * @returns {number} average similarity between Requested User and Neighbor User
 */
-var avgSimilarity = function (user, neighbor, traits) {
+var avgSimilarity = function (user, neighbor, precision) {
   var sum = 0;
   
   //For each vendor rating, calculate the similarity of the RequestedUser's rating to the Neighbor's rating.   Add that to sum. 
-  for (var i=1; i<=traits; i++) {
-    sum += calcSimilarity(user['Vendor' + i], neighbor['Vendor' + i], 5);
+  for (var i=0; i<precision; i++) {
+    sum += calcSimilarity(user['vendor' + i], neighbor['vendor' + i], 5);
   }
   //Return the average similarity (sum of rating similarity scores / number of ratings)
-  return sum/traits;
+  return sum/precision;
 };
 
 /**
@@ -158,12 +161,12 @@ var avgSimilarity = function (user, neighbor, traits) {
 * @param {array} array of neighbor objects, each object contains UserID  of Neighbor and Ratings for the 3 vendors
 * @returns {object} returns neighbor object of most similar neighbor
 */
-var findMostSimilar = function(user, neighbors) {
+var findMostSimilar = function(user, neighbors, precision) {
   var mostSimilar = 0;
   var result = null;
   for (var i=0; i<neighbors.length; i++) {
     //For each neighbor, calculate the average similarity of their ratings. 
-    var similarity = avgSimilarity(user, neighbors[i], 3);
+    var similarity = avgSimilarity(user, neighbors[i], precision);
     
     //If that similarity is greater than the previous most Similar, save that neighbor as nearest.
     if (similarity > mostSimilar) {
@@ -175,4 +178,4 @@ var findMostSimilar = function(user, neighbors) {
 };
 
 // Testing the Algo with User # 4: 
-// findRecommendation(4);
+setTimeout(findRecommendation.bind(this,5, function(result) { console.log('RECOMMENDATIONS:' + result)}), 2000);
